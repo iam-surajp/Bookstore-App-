@@ -110,10 +110,15 @@ export default {
 <style scoped>
 .maindiv {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   justify-content: center;
   display: flex;
   align-items: center;
+  background-color: gray;
+}
+
+.v-card{
+  height: 80%;
 }
 
 .v-tab--selected .v-tab__slider {
@@ -183,12 +188,16 @@ img {
 
    .v-card{
     width: 100%;
-    height: 100%;
+    height: 90%;
    }
 
    .other-btns{
     flex-direction: column;
    }
+
+  .maindiv{
+    background-color: white;
+  }
 }
 
 @media only screen and (max-width:900px){
