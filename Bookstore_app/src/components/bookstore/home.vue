@@ -14,14 +14,6 @@ export default {
   },
 
   methods: {
-    onClick() {
-      this.loading = true;
-
-      setTimeout(() => {
-        this.loading = false;
-        this.loaded = true;
-      }, 2000);
-    },
   },
 };
 </script>
