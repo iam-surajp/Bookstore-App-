@@ -1,20 +1,48 @@
 <script lang="ts">
+import { loginUserServices } from '@/services/userServices';
+
 export default {
   name: "Login",
 
   data() {
     return {
       show: false,
-      password: null,
+      password: '',
+      email:''
     };
   },
+  methods:{
+    submitLogin(){
+      if (this.email!='' && this.password!=''){
+         const reqData = {
+          email:this.email,
+          password:this.password
+         }
+          
+         console.log(reqData)
+         loginUserServices(reqData)
+         .then(res=>{
+          console.log(res)
+          const accessToken = res.data.result.accessToken
+          localStorage.setItem('access-token',accessToken)
+          console.log("Login successfull")
+         })
+         .catch(error=>{
+          console.log(error)
+          console.log("Login failed")
+         })
+      }else{
+        alert("Invalid credentials")
+      }
+    }
+  }
 };
 </script>
 
 <template>
   <div class="fields">
     <div class="labels">Email Id</div>
-    <v-text-field density="compact" variant="outlined"></v-text-field>
+    <v-text-field v-model="email" density="compact" variant="outlined"></v-text-field>
   </div>
   <div class="fields">
     <div class="labels">Password</div>
@@ -23,13 +51,14 @@ export default {
       variant="outlined"
       :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
       :type="show ? 'text' : 'password'"
+      v-model="password"
       @click:append-inner="show = !show"
     ></v-text-field>
     <div class="forgot-pass">Forgot password?</div>
   </div>
   <br />
   <div style="width: 100%; margin: auto">
-    <v-btn class="login-btn">Login</v-btn>
+    <v-btn class="login-btn" @click="submitLogin()">Login</v-btn>
   </div>
   <br />
   <div style="text-align: center; font-size: larger; font-weight: bold">OR</div>

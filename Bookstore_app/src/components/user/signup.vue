@@ -1,5 +1,6 @@
 <script lang="ts">
 import Login from "./login.vue";
+import { registerUserServices } from "@/services/userServices";
 
 export default {
   name: "Signup",
@@ -35,6 +36,32 @@ export default {
   components: {
     Login,
   },
+  methods:{
+    submitForm(){
+      console.log('hii')
+      const reqData={
+          fullName:this.fullName,
+          email:this.email,
+          password:this.password,
+          phone:this.mobileNumber
+      }
+      console.log(reqData)
+      console.log(this.valid)
+
+      if (this.valid){
+        registerUserServices(reqData)
+        .then(res =>{
+          console.log(res)
+        })
+        .catch(error=>{
+          console.log(error)
+        })
+      }else{
+
+      }
+
+    }
+  }
 };
 </script>
 
@@ -53,7 +80,9 @@ export default {
 
       <v-tabs-window v-model="tabs" style="width: 100%; height: 100%">
         <v-tabs-window-item v-for="i in 2" :key="i" :value="i">
+          
           <div v-if="i === 2" class="all-fields">
+            <v-form ref="form" v-model="valid">
             <div class="fields">
               <div class="labels">Full Name</div>
               <v-text-field
@@ -93,11 +122,12 @@ export default {
                 v-model="mobileNumber"
               ></v-text-field>
             </div>
-
             <div style="width: 100%; margin: auto">
-              <v-btn class="btn">Signup</v-btn>
+              <v-btn class="btn" @click="submitForm()">Signup</v-btn>
             </div>
+          </v-form>
           </div>
+        
           <div v-else class="all-fields">
             <Login />
           </div>

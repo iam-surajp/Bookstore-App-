@@ -5,13 +5,18 @@ export default {
   name: "BookDetail",
   data: () => ({
     rating: 3.5,
+    btnClicked:false,
   }),
 
   components: {
     Header,
   },
 
-  methods: {},
+  methods: {
+    runFunc(){
+        this.btnClicked=true
+    }
+  },
 };
 </script>
 
@@ -28,14 +33,18 @@ export default {
         <div class="first-partition">
           <div class="book-img">
             <img
-              style="width: 75%"
-              src="/src/assets/bookstore_imgs/Image 11.png"
+              style="width: 80%;height: 85%;"
+              src="/src/assets/bookstore_imgs/Image 11@2x.png"
             />
           </div>
           <div class="fp-btns">
-            <v-btn class="fp-vbtn" style="background-color: darkred"
-              >add to bag</v-btn
-            >
+            <v-btn class="fp-vbtn" v-if="btnClicked===false" style="background-color: darkred" @click="runFunc()"
+              >add to bag</v-btn>
+            <div class="counts-div" v-if="btnClicked===true">
+              <div class="change-count">-</div>
+              <div class="count">1</div>
+              <div class="change-count">+</div>
+            </div>
             <v-btn class="fp-vbtn" style="background-color: black">
               <v-icon>mdi-heart</v-icon>
               <span>wishlist</span>
@@ -86,6 +95,7 @@ export default {
                 half-increments
                 hover
                 active-color="#FFCE00"
+                style="margin: 0;padding: 0;"
               ></v-rating>
             </div>
             <v-textarea
@@ -138,6 +148,39 @@ export default {
 </template>
 
 <style scoped>
+
+.counts-div{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 49%;
+  justify-content: center;
+
+}
+
+.change-count{
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  /* border: 1px solid gray; */
+  background-color: rgb(208, 206, 206);
+  display: flex;
+  font-size: larger;
+  justify-content: center;
+  align-items: center
+}
+
+.count{
+  width: 30px;
+  height: 30px;
+  /* border: 1px solid gray; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(208, 206, 206);
+
+}
+
 .container {
   margin-top: 80px;
   /* border: 1px solid green; */

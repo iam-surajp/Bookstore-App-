@@ -1,5 +1,6 @@
 <script lang="ts">
 import Header from "./header.vue";
+import { getBooksServices } from "@/services/bookstoreServices";
 
 export default {
   name: "Home",
@@ -7,6 +8,7 @@ export default {
     loaded: false,
     loading: false,
     page:1,
+    books:[]
   }),
 
   components: {
@@ -14,7 +16,23 @@ export default {
   },
 
   methods: {
+    getAllBooks(){
+       getBooksServices()
+       .then(response=>{
+        console.log(response)
+        this.books = response.data.result
+        console.log("books are",this.books)
+       })
+    },
+
+    runBookDetail(id:string){
+        this.$emit('openDetails',id)
+    }
   },
+
+  created(){
+      this.getAllBooks()
+  }
 };
 </script>
 
@@ -25,16 +43,16 @@ export default {
 
   <div class="main">
     <div>
-      <h3>Books (123 items)</h3>
+      <h3>Books ({{ books.length }} items)</h3>
     </div>
     <div class="books-container">
-      <div class="book-card">
+      <div class="book-card" v-for="(book,index) in this.books" @click="runBookDetail(book._id)">
         <div class="book-img">
           <img src="/src/assets/bookstore_imgs/Image 11.png" alt="" />
         </div>
         <div class="book-content">
-          <h6>Don't make me think</h6>
-          <label>By Steve Krug</label>
+          <h6>{{ book.bookName }}</h6>
+          <label>By {{ book.author }}</label>
           <div class="rt-div">
             <div class="rating">
             <label >4.5</label>
@@ -43,228 +61,8 @@ export default {
             <label>(20)</label>
           </div>
           <div class="bk-price">
-            <label>Rs. 1500</label>
-            <label>Rs. 2000</label>
-          </div>
-        </div>
-      </div>
-      <div class="book-card">
-        <div class="book-img">
-          <img src="/src/assets/bookstore_imgs/Image 11.png" alt="" />
-        </div>
-        <div class="book-content">
-          <h6>Don't make me think</h6>
-          <label>By Steve Krug</label>
-          <div class="rt-div">
-            <div class="rating">
-            <label >4.5</label>
-            <v-icon style="font-size: 10px;">mdi-star</v-icon>  
-            </div>
-            <label>(20)</label>
-          </div>
-          <div class="bk-price">
-            <label>Rs. 1500</label>
-            <label>Rs. 2000</label>
-          </div>
-        </div>
-      </div>
-      <div class="book-card">
-        <div class="book-img">
-          <img src="/src/assets/bookstore_imgs/Image 11.png" alt="" />
-        </div>
-        <div class="book-content">
-          <h6>Don't make me think</h6>
-          <label>By Steve Krug</label>
-          <div class="rt-div">
-            <div class="rating">
-            <label >4.5</label>
-            <v-icon style="font-size: 10px;">mdi-star</v-icon>  
-            </div>
-            <label>(20)</label>
-          </div>
-          <div class="bk-price">
-            <label>Rs. 1500</label>
-            <label>Rs. 2000</label>
-          </div>
-        </div>
-      </div>
-      <div class="book-card">
-        <div class="book-img">
-          <img src="/src/assets/bookstore_imgs/Image 11.png" alt="" />
-        </div>
-        <div class="book-content">
-          <h6>Don't make me think</h6>
-          <label>By Steve Krug</label>
-          <div class="rt-div">
-            <div class="rating">
-            <label >4.5</label>
-            <v-icon style="font-size: 10px;">mdi-star</v-icon>  
-            </div>
-            <label>(20)</label>
-          </div>
-          <div class="bk-price">
-            <label>Rs. 1500</label>
-            <label>Rs. 2000</label>
-          </div>
-        </div>
-      </div>
-      <div class="book-card">
-        <div class="book-img">
-          <img src="/src/assets/bookstore_imgs/Image 11.png" alt="" />
-        </div>
-        <div class="book-content">
-          <h6>Don't make me think</h6>
-          <label>By Steve Krug</label>
-          <div class="rt-div">
-            <div class="rating">
-            <label >4.5</label>
-            <v-icon style="font-size: 10px;">mdi-star</v-icon>  
-            </div>
-            <label>(20)</label>
-          </div>
-          <div class="bk-price">
-            <label>Rs. 1500</label>
-            <label>Rs. 2000</label>
-          </div>
-        </div>
-      </div>
-      <div class="book-card">
-        <div class="book-img">
-          <img src="/src/assets/bookstore_imgs/Image 11.png" alt="" />
-        </div>
-        <div class="book-content">
-          <h6>Don't make me think</h6>
-          <label>By Steve Krug</label>
-          <div class="rt-div">
-            <div class="rating">
-            <label >4.5</label>
-            <v-icon style="font-size: 10px;">mdi-star</v-icon>  
-            </div>
-            <label>(20)</label>
-          </div>
-          <div class="bk-price">
-            <label>Rs. 1500</label>
-            <label>Rs. 2000</label>
-          </div>
-        </div>
-      </div>
-      <div class="book-card">
-        <div class="book-img">
-          <img src="/src/assets/bookstore_imgs/Image 11.png" alt="" />
-        </div>
-        <div class="book-content">
-          <h6>Don't make me think</h6>
-          <label>By Steve Krug</label>
-          <div class="rt-div">
-            <div class="rating">
-            <label >4.5</label>
-            <v-icon style="font-size: 10px;">mdi-star</v-icon>  
-            </div>
-            <label>(20)</label>
-          </div>
-          <div class="bk-price">
-            <label>Rs. 1500</label>
-            <label>Rs. 2000</label>
-          </div>
-        </div>
-      </div>
-      <div class="book-card">
-        <div class="book-img">
-          <img src="/src/assets/bookstore_imgs/Image 11.png" alt="" />
-        </div>
-        <div class="book-content">
-          <h6>Don't make me think</h6>
-          <label>By Steve Krug</label>
-          <div class="rt-div">
-            <div class="rating">
-            <label >4.5</label>
-            <v-icon style="font-size: 10px;">mdi-star</v-icon>  
-            </div>
-            <label>(20)</label>
-          </div>
-          <div class="bk-price">
-            <label>Rs. 1500</label>
-            <label>Rs. 2000</label>
-          </div>
-        </div>
-      </div>
-      <div class="book-card">
-        <div class="book-img">
-          <img src="/src/assets/bookstore_imgs/Image 11.png" alt="" />
-        </div>
-        <div class="book-content">
-          <h6>Don't make me think</h6>
-          <label>By Steve Krug</label>
-          <div class="rt-div">
-            <div class="rating">
-            <label >4.5</label>
-            <v-icon style="font-size: 10px;">mdi-star</v-icon>  
-            </div>
-            <label>(20)</label>
-          </div>
-          <div class="bk-price">
-            <label>Rs. 1500</label>
-            <label>Rs. 2000</label>
-          </div>
-        </div>
-      </div>
-      <div class="book-card">
-        <div class="book-img">
-          <img src="/src/assets/bookstore_imgs/Image 11.png" alt="" />
-        </div>
-        <div class="book-content">
-          <h6>Don't make me think</h6>
-          <label>By Steve Krug</label>
-          <div class="rt-div">
-            <div class="rating">
-            <label >4.5</label>
-            <v-icon style="font-size: 10px;">mdi-star</v-icon>  
-            </div>
-            <label>(20)</label>
-          </div>
-          <div class="bk-price">
-            <label>Rs. 1500</label>
-            <label>Rs. 2000</label>
-          </div>
-        </div>
-      </div>
-      <div class="book-card">
-        <div class="book-img">
-          <img src="/src/assets/bookstore_imgs/Image 11.png" alt="" />
-        </div>
-        <div class="book-content">
-          <h6>Don't make me think</h6>
-          <label>By Steve Krug</label>
-          <div class="rt-div">
-            <div class="rating">
-            <label >4.5</label>
-            <v-icon style="font-size: 10px;">mdi-star</v-icon>  
-            </div>
-            <label>(20)</label>
-          </div>
-          <div class="bk-price">
-            <label>Rs. 1500</label>
-            <label>Rs. 2000</label>
-          </div>
-        </div>
-      </div>
-      <div class="book-card">
-        <div class="book-img">
-          <img src="/src/assets/bookstore_imgs/Image 11.png" alt="" />
-        </div>
-        <div class="book-content">
-          <h6>Don't make me think</h6>
-          <label>By Steve Krug</label>
-          <div class="rt-div">
-            <div class="rating">
-            <label >4.5</label>
-            <v-icon style="font-size: 10px;">mdi-star</v-icon>  
-            </div>
-            <label>(20)</label>
-          </div>
-          <div class="bk-price">
-            <label> <b>Rs. 1500</b> </label>
-            <label class="total"><del> Rs. 2000</del> </label>
+            <label><b>Rs.{{ book.discountPrice }}</b></label>
+            <label><s>Rs.{{ book.price }}</s></label>
           </div>
         </div>
       </div>

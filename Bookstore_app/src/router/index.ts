@@ -35,4 +35,15 @@ const router = createRouter({
   ]
 })
 
+router.beforeEach((to, from) => {
+  const tk = localStorage.getItem('access-token')
+  let isAuthenticated = false
+  if (tk) {
+    isAuthenticated = true
+  }
+  if (!isAuthenticated && to.name !== 'signup') {
+    return { name: 'signup' }
+  }
+})
+
 export default router
