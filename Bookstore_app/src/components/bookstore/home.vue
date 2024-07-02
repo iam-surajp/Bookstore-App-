@@ -1,6 +1,9 @@
 <script lang="ts">
 import Header from "./header.vue";
 import { getBooksServices } from "@/services/bookstoreServices";
+import { useHomeStore } from '@/stores/homeStore';
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default {
   name: "Home",
@@ -15,6 +18,13 @@ export default {
     Header,
   },
 
+  computed: {
+    books() {
+      const homeStore = useHomeStore();
+      return homeStore.filteredBooks;
+    },
+  },
+
   methods: {
     getAllBooks(){
        getBooksServices()
@@ -24,10 +34,25 @@ export default {
         console.log("books are",this.books)
        })
     },
+  },
 
-    runBookDetail(id:string){
-        this.$emit('openDetails',id)
-    }
+  setup() {
+    const homeStore = useHomeStore();
+    const router = useRouter();
+
+    const runBookDetail = (book: { [key: string]: any }) => {
+      homeStore.selectBook(book);
+      router.push(`/book-detail/${book._id}`);
+    };
+
+    onMounted(() => {
+      homeStore.fetchBooks();
+    });
+
+    return {
+      homeStore,
+      runBookDetail,
+    };
   },
 
   created(){
@@ -46,7 +71,7 @@ export default {
       <h3>Books ({{ books.length }} items)</h3>
     </div>
     <div class="books-container">
-      <div class="book-card" v-for="(book,index) in this.books" @click="runBookDetail(book._id)">
+      <div class="book-card" v-for="(book,index) in homeStore.filteredBooks" @click="runBookDetail(book)">
         <div class="book-img">
           <img src="/src/assets/bookstore_imgs/Image 11.png" alt="" />
         </div>

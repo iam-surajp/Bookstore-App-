@@ -13,7 +13,7 @@ const router = createRouter({
       component: Home,
     },
     {
-      path:'/book-detail',
+      path:'/book-detail/:id',
       name:'bookdetail',
       component:BookDetail
     },

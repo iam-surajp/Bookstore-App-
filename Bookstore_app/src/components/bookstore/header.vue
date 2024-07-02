@@ -1,4 +1,6 @@
 <script lang="ts">
+import { useHomeStore } from '@/stores/homeStore';
+import { ref } from 'vue';
 export default {
   name: "Header",
   data: () => ({
@@ -16,6 +18,24 @@ export default {
         }, 2000)
       },
     },
+
+    setup() {
+    const homeStore = useHomeStore();
+    const searchQuery = ref('');
+
+    const onSearch = (event:KeyboardEvent) => {
+      const target = event.target;
+      console.log('Typed:', target.value);
+      homeStore.setSearchQuery(searchQuery.value);
+      console.log(homeStore.filteredBooks)
+    };
+
+    return {
+      homeStore,
+      onSearch,
+      searchQuery,
+    };
+  },
 };
 </script>
 
@@ -30,6 +50,7 @@ export default {
 
         <div class="search-div" width="100%">
             <v-text-field
+        v-model="searchQuery"
         :loading="loading"
         prepend-inner-icon="mdi-magnify"
         density="compact"
@@ -38,6 +59,7 @@ export default {
         hide-details
         single-line
         @click:append-inner="onClick"
+        @keyup="onSearch"
       ></v-text-field>
         </div>
         <v-spacer class="spacer"></v-spacer>
@@ -62,8 +84,6 @@ export default {
         </div>
       </v-app-bar>    
     </v-layout>
-
-
 </template>
 
 <style scoped>

@@ -1,5 +1,8 @@
 <script lang="ts">
 import Header from "./header.vue";
+import { defineComponent, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useHomeStore } from '@/stores/homeStore';
 
 export default {
   name: "BookDetail",
@@ -15,6 +18,22 @@ export default {
   methods: {
     runFunc(){
         this.btnClicked=true
+    }
+  },
+
+  computed: {
+    book() {
+      const homeStore = useHomeStore();
+      const route = useRoute();
+      const bookId = route.params.id;
+      return homeStore.books.find((book) => book._id === bookId);
+    },
+  },
+
+  onMounted() {
+    const homeStore = useHomeStore();
+    if (!this.book) {
+      homeStore.fetchBooks();
     }
   },
 };
@@ -53,8 +72,8 @@ export default {
         </div>
         <div class="second-partition">
           <div class="title-details">
-            <h6>Don't Make Me Think</h6>
-            <label>By Steve Krug</label>
+            <h6>{{ book?.bookName }}</h6>
+            <label>By {{ book?.author }}</label>
             <div class="rt-div">
               <div class="rating">
                 <label>4.5</label>
@@ -63,8 +82,8 @@ export default {
               <label>(20)</label>
             </div>
             <div class="bk-price">
-              <label> <b>Rs. 1500</b> </label>
-              <label class="total"> Rs. 2000 </label>
+              <label> <b>Rs. {{ book?.discountPrice }}</b> </label>
+              <label class="total"> Rs. {{ book?.price }} </label>
             </div>
           </div>
           <br />

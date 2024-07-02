@@ -25,6 +25,7 @@ export default {
           console.log(res)
           const accessToken = res.data.result.accessToken
           localStorage.setItem('access-token',accessToken)
+          this.$router.push('home')
           console.log("Login successfull")
          })
          .catch(error=>{
