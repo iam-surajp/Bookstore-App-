@@ -1,8 +1,10 @@
 <script lang="ts">
 import Header from "./header.vue";
-import { defineComponent, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { defineComponent, onMounted, ref } from 'vue';
 import { useHomeStore } from '@/stores/homeStore';
+import {useCounterStore} from '@/stores/counter';
+import { addCartItemServices,removeCartItemServices } from "@/services/bookstoreServices";
 
 export default {
   name: "BookDetail",
@@ -18,6 +20,53 @@ export default {
   methods: {
     runFunc(){
         this.btnClicked=true
+    },
+
+    addItem(){
+      const id = this.$route.params.id
+      console.log('id is',id)
+      addCartItemServices(id)
+      .then(response=>{
+        console.log(response)
+        console.log("Item added")
+      })
+      .catch(error=>{
+        console.log("Some error")
+        console.log(error)
+      })
+    },
+
+    removeItem(){
+      const id = this.$route.params.id
+      removeCartItemServices(id)
+      .then(response=>{
+        console.log(response)
+        console.log("Item removed")
+      })
+      .catch(error=>{
+        console.log("Some error")
+        console.log(error)
+      })
+    }
+  },
+
+  setup(){
+    const counterStore = useCounterStore()
+    const bookId = ref<string | null>(null);
+    const book = ref<any>(null);
+    const homeStore = useHomeStore();
+    const route = useRoute();
+
+    onMounted(() => {
+      bookId.value = route.params.id as string;
+      if (bookId.value)
+       {
+        book.value = homeStore.books.find(b => b._id === bookId.value);
+      }
+    });
+
+    return{
+      counterStore
     }
   },
 
@@ -60,9 +109,9 @@ export default {
             <v-btn class="fp-vbtn" v-if="btnClicked===false" style="background-color: darkred" @click="runFunc()"
               >add to bag</v-btn>
             <div class="counts-div" v-if="btnClicked===true">
-              <div class="change-count">-</div>
-              <div class="count">1</div>
-              <div class="change-count">+</div>
+              <div class="change-count" @click="counterStore.decrement(), removeItem()">-</div>
+              <div class="count">{{counterStore.count}}</div>
+              <div class="change-count" @click="counterStore.increment(), addItem()">+</div>
             </div>
             <v-btn class="fp-vbtn" style="background-color: black">
               <v-icon>mdi-heart</v-icon>
@@ -83,7 +132,7 @@ export default {
             </div>
             <div class="bk-price">
               <label> <b>Rs. {{ book?.discountPrice }}</b> </label>
-              <label class="total"> Rs. {{ book?.price }} </label>
+              <label class="total"> <s>Rs. {{ book?.price }}</s> </label>
             </div>
           </div>
           <br />
@@ -114,7 +163,6 @@ export default {
                 half-increments
                 hover
                 active-color="#FFCE00"
-                style="margin: 0;padding: 0;"
               ></v-rating>
             </div>
             <v-textarea
@@ -130,9 +178,9 @@ export default {
           </div>
           <div><br>
             <div class="comments">
-              <div style="display: flex;gap: 10px; align-items: center;">
-                <div style="display: flex;justify-content: center;width: 25px;height: 25px;border-radius: 50%;background-color: #F5F5F5;">AC</div>
-                <div> <h5>Aniket Chile</h5></div>
+              <div class="n-l-div">
+                <div class="name-logo">AC</div>
+                <div><h5>Aniket Shinde</h5></div>
               </div>
               <div class="text-left">
                 <v-rating v-model="rating" readonly active-color="#FFCE00"></v-rating>
@@ -144,9 +192,9 @@ export default {
               </p>
             </div><br>
             <div class="comments">
-              <div style="display: flex;gap: 10px; align-items: center;">
-                <div style="display: flex;justify-content: center;width: 25px;height: 25px;border-radius: 50%;background-color: #F5F5F5;">SB</div>
-                <div> <h5>Shweta Bodkar</h5></div>
+              <div class="n-l-div">
+                <div class="name-logo">SB</div>
+                <div> <h5>Vishal Patil</h5></div>
               </div>
               
               <div class="text-left">
@@ -181,7 +229,6 @@ export default {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  /* border: 1px solid gray; */
   background-color: rgb(208, 206, 206);
   display: flex;
   font-size: larger;
@@ -192,7 +239,6 @@ export default {
 .count{
   width: 30px;
   height: 30px;
-  /* border: 1px solid gray; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -202,12 +248,10 @@ export default {
 
 .container {
   margin-top: 80px;
-  /* border: 1px solid green; */
   min-height: fit-content;
 }
 
 .main-content {
-  /* border: 1px solid salmon; */
   width: 80%;
   height: fit-content;
   margin: auto;
@@ -216,7 +260,6 @@ export default {
 .first-partition {
   width: 40%;
   height: 70vh;
-  /* border: 1px solid blue; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -236,7 +279,6 @@ export default {
   margin-top: 20px;
   gap: 20px;
   width: 80%;
-  /* border: 1px solid pink; */
 }
 
 .fp-vbtn {
@@ -248,7 +290,6 @@ export default {
 .second-partition {
   width: 60%;
   height: 100vh;
-  /* border: 1px solid blue; */
 }
 
 .bk-price {
@@ -317,7 +358,22 @@ div h5 {
   padding: 20px;
 }
 
+.n-l-div{
+  display: flex;
+  gap: 10px; 
+  align-items: center;
+}
+
 .comments h5{
   font-size: 15px;
+}
+
+.name-logo{
+  display: flex;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: #F5F5F5;
 }
 </style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { loginUserServices } from '@/services/userServices';
+import { loginUserServices } from "@/services/userServices";
 
 export default {
   name: "Login",
@@ -7,43 +7,47 @@ export default {
   data() {
     return {
       show: false,
-      password: '',
-      email:''
+      password: "",
+      email: "",
     };
   },
-  methods:{
-    submitLogin(){
-      if (this.email!='' && this.password!=''){
-         const reqData = {
-          email:this.email,
-          password:this.password
-         }
-          
-         console.log(reqData)
-         loginUserServices(reqData)
-         .then(res=>{
-          console.log(res)
-          const accessToken = res.data.result.accessToken
-          localStorage.setItem('access-token',accessToken)
-          this.$router.push('home')
-          console.log("Login successfull")
-         })
-         .catch(error=>{
-          console.log(error)
-          console.log("Login failed")
-         })
-      }else{
-        alert("Invalid credentials")
+  methods: {
+    submitLogin() {
+      if (this.email != "" && this.password != "") {
+        const reqData = {
+          email: this.email,
+          password: this.password,
+        };
+
+        console.log(reqData);
+        loginUserServices(reqData)
+          .then((res) => {
+            console.log(res);
+            const accessToken = res.data.result.accessToken;
+            localStorage.setItem("x-access-token", accessToken);
+            this.$router.push("home");
+            console.log("Login successfull");
+          })
+          .catch((error) => {
+            console.log(error);
+            console.log("Login failed");
+          });
+      } else {
+        alert("Invalid credentials");
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <template>
   <div class="fields">
     <div class="labels">Email Id</div>
-    <v-text-field v-model="email" density="compact" variant="outlined"></v-text-field>
+    <v-text-field
+      v-model="email"
+      density="compact"
+      variant="outlined"
+    ></v-text-field>
   </div>
   <div class="fields">
     <div class="labels">Password</div>

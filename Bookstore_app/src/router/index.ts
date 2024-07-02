@@ -36,7 +36,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-  const tk = localStorage.getItem('access-token')
+  const tk = localStorage.getItem('x-access-token')
   let isAuthenticated = false
   if (tk) {
     isAuthenticated = true
