@@ -1,16 +1,21 @@
 <script lang="ts">
 import Header from "./header.vue";
-import { useRoute } from 'vue-router';
-import { defineComponent, onMounted, ref } from 'vue';
-import { useHomeStore } from '@/stores/homeStore';
-import {useCounterStore} from '@/stores/counter';
-import { addCartItemServices,removeCartItemServices } from "@/services/bookstoreServices";
+import { useRoute } from "vue-router";
+import { onMounted, ref } from "vue";
+import { useHomeStore } from "@/stores/homeStore";
+import { useCounterStore } from "@/stores/counter";
+import {
+  addCartItemServices,
+  removeCartItemServices,
+  getFeedbackServices,
+} from "@/services/bookstoreServices";
 
 export default {
   name: "BookDetail",
   data: () => ({
-    rating: 3.5,
-    btnClicked:false,
+    rating: 0,
+    btnClicked: false,
+    feedbacks:[]
   }),
 
   components: {
@@ -18,40 +23,54 @@ export default {
   },
 
   methods: {
-    runFunc(){
-        this.btnClicked=true
+    runFunc() {
+      this.btnClicked = true;
     },
 
-    addItem(){
-      const id = this.$route.params.id
-      console.log('id is',id)
+    addItem() {
+      const id = this.$route.params.id;
+      console.log("id is", id);
       addCartItemServices(id)
-      .then(response=>{
-        console.log(response)
-        console.log("Item added")
-      })
-      .catch(error=>{
-        console.log("Some error")
-        console.log(error)
-      })
+        .then((response) => {
+          console.log(response);
+          console.log("Item added");
+        })
+        .catch((error) => {
+          console.log("Some error");
+          console.log(error);
+        });
     },
 
-    removeItem(){
-      const id = this.$route.params.id
+    removeItem() {
+      const id = this.$route.params.id;
       removeCartItemServices(id)
-      .then(response=>{
-        console.log(response)
-        console.log("Item removed")
-      })
-      .catch(error=>{
-        console.log("Some error")
-        console.log(error)
-      })
-    }
+        .then((response) => {
+          console.log(response);
+          console.log("Item removed");
+        })
+        .catch((error) => {
+          console.log("Some error");
+          console.log(error);
+        });
+    },
+
+    showFeedback() {
+      const id = this.$route.params.id;
+      console.log("this is feedback func")
+      getFeedbackServices(id)
+        .then((response) => {
+          console.log(response);
+          this.feedbacks = response.data.result
+          console.log('feedbacks',this.feedbacks)
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
 
-  setup(){
-    const counterStore = useCounterStore()
+  setup() {
+    const counterStore = useCounterStore();
     const bookId = ref<string | null>(null);
     const book = ref<any>(null);
     const homeStore = useHomeStore();
@@ -59,15 +78,14 @@ export default {
 
     onMounted(() => {
       bookId.value = route.params.id as string;
-      if (bookId.value)
-       {
-        book.value = homeStore.books.find(b => b._id === bookId.value);
+      if (bookId.value) {
+        book.value = homeStore.books.find((b) => b._id === bookId.value);
       }
     });
 
-    return{
-      counterStore
-    }
+    return {
+      counterStore,
+    };
   },
 
   computed: {
@@ -79,8 +97,9 @@ export default {
     },
   },
 
-  onMounted() {
+  mounted() {
     const homeStore = useHomeStore();
+    this.showFeedback();
     if (!this.book) {
       homeStore.fetchBooks();
     }
@@ -101,17 +120,32 @@ export default {
         <div class="first-partition">
           <div class="book-img">
             <img
-              style="width: 80%;height: 85%;"
+              style="width: 80%; height: 85%"
               src="/src/assets/bookstore_imgs/Image 11@2x.png"
             />
           </div>
           <div class="fp-btns">
-            <v-btn class="fp-vbtn" v-if="btnClicked===false" style="background-color: darkred" @click="runFunc()"
-              >add to bag</v-btn>
-            <div class="counts-div" v-if="btnClicked===true">
-              <div class="change-count" @click="counterStore.decrement(), removeItem()">-</div>
-              <div class="count">{{counterStore.count}}</div>
-              <div class="change-count" @click="counterStore.increment(), addItem()">+</div>
+            <v-btn
+              class="fp-vbtn"
+              v-if="btnClicked === false"
+              style="background-color: darkred"
+              @click="runFunc()"
+              >add to bag</v-btn
+            >
+            <div class="counts-div" v-if="btnClicked === true">
+              <div
+                class="change-count"
+                @click="counterStore.decrement()"
+              >
+                -
+              </div>
+              <div class="count">{{ counterStore.count }}</div>
+              <div
+                class="change-count"
+                @click="counterStore.increment(), addItem()"
+              >
+                +
+              </div>
             </div>
             <v-btn class="fp-vbtn" style="background-color: black">
               <v-icon>mdi-heart</v-icon>
@@ -121,8 +155,8 @@ export default {
         </div>
         <div class="second-partition">
           <div class="title-details">
-            <h6>{{ book?.bookName }}</h6>
-            <label>By {{ book?.author }}</label>
+            <div><h6>{{ book?.bookName }}</h6></div>
+            <div class="mb-2"><label class="author-name">by {{ book?.author }}</label></div>
             <div class="rt-div">
               <div class="rating">
                 <label>4.5</label>
@@ -131,8 +165,12 @@ export default {
               <label>(20)</label>
             </div>
             <div class="bk-price">
-              <label> <b>Rs. {{ book?.discountPrice }}</b> </label>
-              <label class="total"> <s>Rs. {{ book?.price }}</s> </label>
+              <label class="d-price">
+               Rs. {{ book?.discountPrice }}
+              </label>
+              <label class="total">
+                <s>Rs. {{ book?.price }}</s>
+              </label>
             </div>
           </div>
           <br />
@@ -171,42 +209,33 @@ export default {
               rows="2"
             ></v-textarea>
             <div class="submit-btn">
-              <v-btn style="background-color: #3371b5; color: white"
+              <v-btn style="background-color: #3371b5; color: white;text-transform: capitalize"
                 >Submit</v-btn
               >
             </div>
           </div>
-          <div><br>
-            <div class="comments">
+          <div>
+            <br />
+            <div class="comments" v-for="(feedback,index) in feedbacks" :key="index">
+              <br>
               <div class="n-l-div">
-                <div class="name-logo">AC</div>
-                <div><h5>Aniket Shinde</h5></div>
+                <div class="name-logo">{{ feedback.user_id.fullName[0] }}</div>
+                <div><h5><b>{{feedback.user_id.fullName}}</b></h5></div>
               </div>
               <div class="text-left">
-                <v-rating v-model="rating" readonly active-color="#FFCE00"></v-rating>
+                <v-rating
+                  v-model="feedback.rating"
+                  readonly
+                  active-color="#FFCE00"
+                  class="comment-rating"
+                  style="margin-left: 20px;"
+                ></v-rating>
               </div>
-              <p>
-                Good product. Even though the translation could have been
-                better. Chanakya's neeti are thought provoking. Chanakya has
-                written on many different topics and his writings are succinct.
-              </p>
-            </div><br>
-            <div class="comments">
-              <div class="n-l-div">
-                <div class="name-logo">SB</div>
-                <div> <h5>Vishal Patil</h5></div>
-              </div>
-              
-              <div class="text-left">
-                <v-rating v-model="rating" readonly active-color="#FFCE00"></v-rating>
-              </div>
-              <p>
-                Good product. Even though the translation could have been
-                better. Chanakya's neeti are thought provoking. Chanakya has
-                written on many different topics and his writings are succinct.
+              <p class="comment-line" style="margin-left: 35px;">
+                {{feedback.comment}}
               </p>
             </div>
-            <br><br>
+            <br /><br />
           </div>
         </div>
       </div>
@@ -215,35 +244,33 @@ export default {
 </template>
 
 <style scoped>
-
-.counts-div{
+.counts-div {
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 49%;
+  width: 48%;
   justify-content: center;
-
 }
 
-.change-count{
-  width: 30px;
-  height: 30px;
+.change-count {
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background-color: rgb(208, 206, 206);
+  background-color: rgb(238, 238, 238);
   display: flex;
-  font-size: larger;
+  font-size: 30px;
   justify-content: center;
-  align-items: center
+  align-items: center;
 }
 
-.count{
-  width: 30px;
-  height: 30px;
+.count {
+  width: 66px;
+  height: 38px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(208, 206, 206);
-
+  background-color: rgb(238, 238, 238);
+  font-size: 22px
 }
 
 .container {
@@ -294,6 +321,9 @@ export default {
 
 .bk-price {
   margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .title-details h6 {
@@ -334,17 +364,23 @@ export default {
   font-size: 15px;
 }
 
-.bk-price {
-  display: flex;
-  gap: 10px;
-}
-
 hr {
   border-color: rgb(233, 233, 233);
 }
 
 div h5 {
-  font-size: 25px;
+  font-size: 20px;
+}
+
+label.d-price{
+  font-size: 35px;
+  font-weight: 600;
+}
+
+.author-name{
+  font-size: 15px;
+  color: gray;
+  padding-bottom: 15px;
 }
 
 .submit-btn {
@@ -358,22 +394,26 @@ div h5 {
   padding: 20px;
 }
 
-.n-l-div{
+.n-l-div {
   display: flex;
-  gap: 10px; 
+  gap: 10px;
   align-items: center;
 }
 
-.comments h5{
+.comments h5 {
   font-size: 15px;
 }
 
-.name-logo{
+.name-logo {
   display: flex;
   justify-content: center;
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
+}
+
+.text-left{
+  height: 45px
 }
 </style>

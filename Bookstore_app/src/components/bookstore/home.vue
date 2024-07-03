@@ -73,8 +73,8 @@ export default {
       <div>
         <select name="sorting">
           <option value="volvo">Sort by relevance  &#8595 </option>
-          <option value="saab">Low to high price</option>
-          <option value="opel">High to low price</option>
+          <option value="saab">Price low to high </option>
+          <option value="opel">Price high to low </option>
         </select>
       </div>
     </div>
@@ -89,7 +89,7 @@ export default {
         </div>
         <div class="book-content">
           <h6>{{ book.bookName }}</h6>
-          <label>By {{ book.author }}</label>
+          <label>by {{ book.author }}</label>
           <div class="rt-div">
             <div class="rating">
               <label>4.5</label>
@@ -99,7 +99,7 @@ export default {
           </div>
           <div class="bk-price">
             <label
-              ><b>Rs.{{ book.discountPrice }}</b></label
+              ><b>Rs. {{ book.discountPrice }}</b></label
             >
             <label
               ><s>Rs.{{ book.price }}</s></label

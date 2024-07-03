@@ -1,11 +1,20 @@
 <script lang="ts">
 import { useHomeStore } from "@/stores/homeStore";
+import { getCartItemsServices } from "@/services/bookstoreServices";
 import { ref } from "vue";
 export default {
   name: "Header",
   data: () => ({
     loaded: false,
     loading: false,
+    allCartItems: [],
+    items: [
+      { title: "Profile", icon: "mdi-account-outline" },
+      { title: "My Orders", icon: "mdi-shopping-outline" },
+      { title: "My Wishlist", icon: "mdi-heart-outline" },
+    ],
+    location:'bottom',
+    cartItemsCount:0
   }),
 
   methods: {
@@ -17,6 +26,24 @@ export default {
         this.loaded = true;
       }, 2000);
     },
+
+    getCartItems() {
+      getCartItemsServices()
+        .then((response) => {
+          console.log(response);
+          this.allCartItems = response.data.result;
+          this.cartItemsCount = this.allCartItems.length 
+          // console.log('all cart items',this.allCartItems)
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    logout_user(){
+      localStorage.removeItem('x-access-token')
+      this.$router.push('signup')
+    }
   },
 
   setup() {
@@ -35,6 +62,10 @@ export default {
       onSearch,
       searchQuery,
     };
+  },
+
+  mounted() {
+    this.getCartItems();
   },
 };
 </script>
@@ -64,18 +95,41 @@ export default {
         <v-spacer class="spacer"></v-spacer>
 
         <div>
-          <v-btn icon class="header-items">
-            <div class="item">
-              <v-icon>mdi-account</v-icon>
-              <label>Profile</label>
+          <v-menu transition="slide-x-transition" :location="this.location">
+            <template v-slot:activator="{ props }">
+              <v-btn icon class="header-items" v-bind="props">
+                <div class="item">
+                  <v-icon>mdi-account</v-icon>
+                  <label>Profile</label>
+                </div>
+              </v-btn>
+            </template>
+
+            <div style="width: 200px;">
+              <v-list>
+                <div>
+                  <h6 style="font-weight: 700; font-size: 15px;padding-left: 20px">
+                    Hello Suraj,
+                  </h6>
+                </div>
+                <v-list-item v-for="(item, i) in items" :key="i">
+                  <div class="profile-items">
+                    <v-icon>{{ item.icon }}</v-icon>
+                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                  </div>
+                </v-list-item>
+                <v-btn class="logout-btn" @click="logout_user()">Logout</v-btn>
+              </v-list>
             </div>
-          </v-btn>
+          </v-menu>
         </div>
 
         <div>
           <v-btn icon class="header-items">
             <div class="item">
-              <v-icon>mdi-cart</v-icon>
+              <v-badge color="white" :content="this.cartItemsCount">
+                <v-icon>mdi-cart</v-icon>
+              </v-badge>
               <label>Cart</label>
             </div>
           </v-btn>
@@ -120,6 +174,29 @@ label {
   font-size: 10px;
 }
 
+.v-list-item--density-default{
+  min-height: 5px !important;
+}
+
+.profile-items{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.logout-btn{
+  border: 1px solid red;
+  padding: 10px;
+  margin-left: 15px;
+  font-size: 15px;
+  width: 80%;
+  text-transform: capitalize;
+  color: red
+}
+
+
 @media only screen and (max-width: 600px) {
   .header-items {
     margin: 5px;
@@ -135,4 +212,6 @@ label {
     display: none;
   }
 }
+
+
 </style>

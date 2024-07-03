@@ -30,6 +30,16 @@ export const removeCartItemServices = (id:string|string[]) =>{
   return Post(`bookstore_user/remove_cart_item/${id}`,data,{headers})
 }
 
+
+export const getCartItemsServices = () =>{
+  const headers = {
+    'Content-Type':'application/json',
+    'x-access-token':token
+  }
+  return Get(`bookstore_user/get_cart_items`,{headers})
+}
+
+
 export const getFeedbackServices = (id:string|string[]) =>{
   const headers = {
     'Content-Type':'application/json',
