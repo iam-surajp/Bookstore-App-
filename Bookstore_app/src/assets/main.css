@@ -20,9 +20,10 @@ a,
   padding: 3px;
 }
 
-/* body{
-  background-color: rgb(167, 167, 167);
-} */
+body{
+  /* background-color: rgb(167, 167, 167);
+  height: fit-content; */
+}
 
 @media (hover: hover) {
   a:hover {

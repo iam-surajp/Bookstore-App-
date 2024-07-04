@@ -12,6 +12,7 @@ export default {
     loading: false,
     page: 1,
     books: [],
+    sortOption: 'relevance',
   }),
 
   components: {
@@ -19,9 +20,15 @@ export default {
   },
 
   computed: {
-    books() {
+    sortedBooks() {
       const homeStore = useHomeStore();
-      return homeStore.filteredBooks;
+      const sortedBooks = [...homeStore.filteredBooks];
+      if (this.sortOption === 'priceLowToHigh') {
+        return sortedBooks.sort((a, b) => a.discountPrice - b.discountPrice);
+      } else if (this.sortOption === 'priceHighToLow') {
+        return sortedBooks.sort((a, b) => b.discountPrice - a.discountPrice);
+      }
+      return sortedBooks;
     },
   },
 
@@ -32,6 +39,9 @@ export default {
         this.books = response.data.result;
         console.log("books are", this.books);
       });
+    },
+    sortBooks(event) {
+      this.sortOption = event.target.value;
     },
   },
 
@@ -71,17 +81,17 @@ export default {
       <h3>Books ({{ books.length }} items)</h3>
       </div>
       <div>
-        <select name="sorting">
-          <option value="volvo">Sort by relevance  &#8595 </option>
-          <option value="saab">Price low to high </option>
-          <option value="opel">Price high to low </option>
+        <select name="sorting" @change="sortBooks">
+          <option value="relevance">Sort by relevance  &#8595 </option>
+          <option value="priceLowToHigh">Price low to high </option>
+          <option value="priceHighToLow">Price high to low </option>
         </select>
       </div>
     </div>
     <div class="books-container">
       <div
         class="book-card"
-        v-for="(book, index) in homeStore.filteredBooks"
+        v-for="(book, index) in sortedBooks"
         @click="runBookDetail(book)"
       >
         <div class="book-img">

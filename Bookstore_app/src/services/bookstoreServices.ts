@@ -47,3 +47,11 @@ export const getFeedbackServices = (id:string|string[]) =>{
   }
   return Get(`bookstore_user/get/feedback/${id}`,{headers})
 }
+
+export const addFeedbackServices = (id:string|string[],data:Object) =>{
+  const headers = {
+    'Content-Type':'application/json',
+    'x-access-token':token
+  }
+  return Post(`bookstore_user/add/feedback/${id}`,data,{headers})
+}

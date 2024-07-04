@@ -8,6 +8,7 @@ import {
   addCartItemServices,
   removeCartItemServices,
   getFeedbackServices,
+  addFeedbackServices
 } from "@/services/bookstoreServices";
 
 export default {
@@ -15,7 +16,9 @@ export default {
   data: () => ({
     rating: 0,
     btnClicked: false,
-    feedbacks:[]
+    feedbacks:[],
+    comment:'',
+    bookId:''
   }),
 
   components: {
@@ -67,6 +70,24 @@ export default {
           console.log(error);
         });
     },
+
+    submitFeedback(){
+      const id = this.$route.params.id;
+        const reqData = {
+          comment:this.comment,
+          rating:this.rating
+        }
+        addFeedbackServices(id,reqData)
+        .then(response=>{
+          console.log('add feedback',response)
+          this.showFeedback()
+          this.comment = '';
+          this.rating = undefined;
+        })
+        .catch(error=>{
+          console.log(error)
+        })
+    }
   },
 
   setup() {
@@ -92,8 +113,8 @@ export default {
     book() {
       const homeStore = useHomeStore();
       const route = useRoute();
-      const bookId = route.params.id;
-      return homeStore.books.find((book) => book._id === bookId);
+      // const bookId = route.params.id;
+      return homeStore.books.find((book) => book._id === this.bookId);
     },
   },
 
@@ -103,6 +124,10 @@ export default {
     if (!this.book) {
       homeStore.fetchBooks();
     }
+  },
+  created() {
+      const route = useRoute();
+      this.bookId = route.params.id
   },
 };
 </script>
@@ -116,11 +141,10 @@ export default {
       <div>
         <label>Home / <b>Book(01)</b></label>
       </div>
-      <div style="display: flex; margin-top: 30px">
+      <div id="fp-div1">
         <div class="first-partition">
           <div class="book-img">
             <img
-              style="width: 80%; height: 85%"
               src="/src/assets/bookstore_imgs/Image 11@2x.png"
             />
           </div>
@@ -177,7 +201,7 @@ export default {
           <hr />
           <br />
           <div>
-            <li style="font-size: 18px; color: gray">Book detail</li>
+            <li id="bd-title">Book detail</li>
             <p>
               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eaque
               quam enim minus cupiditate error aperiam velit consequatur
@@ -198,7 +222,6 @@ export default {
             <div class="text-left">
               <v-rating
                 v-model="rating"
-                half-increments
                 hover
                 active-color="#FFCE00"
               ></v-rating>
@@ -207,20 +230,19 @@ export default {
               placeholder="Write your review"
               variant="solo"
               rows="2"
+              v-model="comment"
             ></v-textarea>
             <div class="submit-btn">
-              <v-btn style="background-color: #3371b5; color: white;text-transform: capitalize"
-                >Submit</v-btn
-              >
+              <v-btn id="sbm-bt" @click="submitFeedback()">Submit</v-btn>
             </div>
           </div>
-          <div>
+          <div class="cmnt-parent">
             <br />
             <div class="comments" v-for="(feedback,index) in feedbacks" :key="index">
               <br>
               <div class="n-l-div">
-                <div class="name-logo">{{ feedback.user_id.fullName[0] }}</div>
-                <div><h5><b>{{feedback.user_id.fullName}}</b></h5></div>
+                <div class="name-logo">{{feedback.user_id.fullName[0] }}</div>
+                <div><h5><b>{{ feedback.user_id?.fullName}}</b></h5></div>
               </div>
               <div class="text-left">
                 <v-rating
@@ -275,7 +297,7 @@ export default {
 
 .container {
   margin-top: 80px;
-  min-height: fit-content;
+  height: fit-content;
 }
 
 .main-content {
@@ -299,6 +321,16 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.book-img img{
+  width: 80%; 
+  height: 85%
+}
+
+#fp-div1{
+   display: flex; 
+   margin-top: 30px
 }
 
 .fp-btns {
@@ -372,6 +404,11 @@ div h5 {
   font-size: 20px;
 }
 
+#bd-title{
+   font-size: 18px; 
+   color: gray
+}
+
 label.d-price{
   font-size: 35px;
   font-weight: 600;
@@ -400,8 +437,19 @@ label.d-price{
   align-items: center;
 }
 
+.cmnt-parent{
+  height: 70vh;
+  overflow-y: auto
+}
+
 .comments h5 {
   font-size: 15px;
+}
+
+#sbm-bt{
+   background-color: #3371b5; 
+   color: white;
+   text-transform: capitalize
 }
 
 .name-logo {

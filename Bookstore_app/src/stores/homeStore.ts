@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getBooksServices } from '@/services/bookstoreServices';
+import { getFeedbackServices, getBooksServices } from '@/services/bookstoreServices';
 
 export const useHomeStore = defineStore('homeStore', {
   state: () => ({
@@ -16,6 +16,15 @@ export const useHomeStore = defineStore('homeStore', {
         console.error(error);
       }
     },
+
+    async fetchFeedbacks(){
+      try {
+        const res = await getFeedbackServices()
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
     setSearchQuery(query: string) {
       this.searchQuery = query;
     },

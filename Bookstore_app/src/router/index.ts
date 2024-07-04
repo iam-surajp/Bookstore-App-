@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import Signup from '@/components/user/signup.vue'
 import Home from '../components/bookstore/home.vue'
-import BookDetail from '../components/bookstore/book-detail.vue' 
+import BookDetail from '../components/bookstore/book-detail.vue'
+import Cart from '../components/cart_access/cart.vue' 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,6 +12,7 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: Home,
+      children:[]
     },
     {
       path:'/book-detail/:id',
@@ -22,6 +24,12 @@ const router = createRouter({
       path:'/signup',
       name:'signup',
       component:Signup
+    },
+
+    {
+      path:'/home/cart',
+      name:'cart',
+      component:Cart
     },
 
     {
