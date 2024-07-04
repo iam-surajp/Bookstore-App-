@@ -17,14 +17,6 @@ export const useHomeStore = defineStore('homeStore', {
       }
     },
 
-    async fetchFeedbacks(){
-      try {
-        const res = await getFeedbackServices()
-      } catch (error) {
-        console.error(error);
-      }
-    },
-
     setSearchQuery(query: string) {
       this.searchQuery = query;
     },

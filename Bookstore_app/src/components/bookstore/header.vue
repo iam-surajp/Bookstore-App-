@@ -108,7 +108,7 @@ export default {
             <div style="width: 200px;">
               <v-list>
                 <div>
-                  <h6 style="font-weight: 700; font-size: 15px;padding-left: 20px">
+                  <h6 class="greet-user">
                     Hello Suraj,
                   </h6>
                 </div>
@@ -125,14 +125,14 @@ export default {
         </div>
 
         <div>
-          <v-btn icon class="header-items">
+          <router-link class="header-items" to="cart">
             <div class="item">
               <v-badge color="white" :content="this.cartItemsCount">
-                <v-icon>mdi-cart</v-icon>
+                <v-icon>mdi-cart-outline</v-icon>
               </v-badge>
               <label>Cart</label>
             </div>
-          </v-btn>
+          </router-link>
         </div>
       </div>
     </v-app-bar>
@@ -142,7 +142,7 @@ export default {
 <style scoped>
 .header-div {
   display: flex;
-  width: 80%;
+  width: 75%;
   height: 100%;
   margin: auto;
   align-items: center;
@@ -160,6 +160,8 @@ export default {
 
 .header-items {
   margin: 20px;
+  color: white;
+  /* background-color: white; */
 }
 
 .item {
@@ -196,6 +198,11 @@ label {
   color: red
 }
 
+.greet-user{
+  font-weight: 700; 
+  font-size: 15px;
+  padding-left: 20px
+}
 
 @media only screen and (max-width: 600px) {
   .header-items {
