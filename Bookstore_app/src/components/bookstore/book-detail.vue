@@ -26,11 +26,8 @@ export default {
   },
 
   methods: {
-    runFunc() {
+    addItemFunc() {
       this.btnClicked = true;
-    },
-
-    addItem() {
       const id = this.$route.params.id;
       console.log("id is", id);
       addCartItemServices(id)
@@ -153,7 +150,7 @@ export default {
               class="fp-vbtn"
               v-if="btnClicked === false"
               style="background-color: darkred"
-              @click="runFunc()"
+              @click="addItemFunc()"
               >add to bag</v-btn
             >
             <div class="counts-div" v-if="btnClicked === true">
@@ -166,7 +163,7 @@ export default {
               <div class="count">{{ counterStore.count }}</div>
               <div
                 class="change-count"
-                @click="counterStore.increment(), addItem()"
+                @click="counterStore.increment()"
               >
                 +
               </div>

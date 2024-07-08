@@ -8,7 +8,7 @@ export default {
     return {
       cart_items: [],
       pl_ord_clkd: false,
-      cntnue_btn_clkd:false
+      cntinue_btn_clkd:false
     };
   },
 
@@ -89,8 +89,7 @@ export default {
         </div>
         <div class="btns-div">
           <v-btn class="cart-btn" @click="pl_ord_clkd = true"
-            >Place Order</v-btn
-          >
+            >Place Order</v-btn>
         </div>
       </div>
       <br />
@@ -151,7 +150,7 @@ export default {
               </div>
             </div>
             <div class="btns-div">
-              <v-btn class="cart-btn" @click="cntnue_btn_clkd = true"
+              <v-btn class="cart-btn" @click="cntinue_btn_clkd = true"
                 >Continue</v-btn
               >
             </div>
@@ -160,15 +159,16 @@ export default {
       </div>
       <br />
       <div class="other-info">
-        <label>Order Summary</label>
+        <label v-if="!cntinue_btn_clkd">Order Summary</label>
+        <template v-else>
+          <label>Order Summary</label>
         <div id="two-partitions" v-for="(item, index) in cart_items">
           <div class="first-part">
             <div class="book-img">
               <img
                 src="/src/assets/bookstore_imgs/Image 11@2x.png"
                 width="65px"
-                height="85px"
-              />
+                height="85px"/>
             </div>
           </div>
           <div class="second-part">
@@ -178,8 +178,7 @@ export default {
               </div>
               <div class="mb-2">
                 <label class="writer-name"
-                  >by {{ item.product_id.author }}</label
-                >
+                  >by {{ item.product_id.author }}</label>
               </div>
               <div class="all-price">
                 <label class="disc-price">
@@ -193,9 +192,10 @@ export default {
           </div>
         </div>
         <div class="btns-div">
-              <v-btn class="cart-btn" @click="addr_btn_clkd = true"
+              <v-btn class="cart-btn" @click=""
                 >Checkout</v-btn>
             </div>
+        </template>
       </div>
       <br />
     </div>
@@ -214,13 +214,13 @@ export default {
   width: 80%;
   height: fit-content;
   margin: auto;
-  border: 1px solid black;
+  /* border: 1px solid black; */
 }
 
 .cart-item {
   width: 80%;
   height: fit-content;
-  border: 1px solid #707070;
+  border: 1px solid rgb(201, 201, 201);
   margin-top: 10px;
   padding: 20px;
 }
@@ -229,14 +229,14 @@ export default {
   display: flex;
   align-items: center;
   padding: 20px;
-  border: 1px solid gray;
+  border: 1px solid rgb(201, 201, 201);
   width: 80%;
   height: fit-content;
 }
 
 .other-info{
   padding: 20px;
-  border: 1px solid gray;
+  border: 1px solid rgb(201, 201, 201);
   width: 80%;
   height: fit-content;
 }
