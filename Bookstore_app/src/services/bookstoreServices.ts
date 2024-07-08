@@ -1,4 +1,4 @@
-import { Post,Get } from './axiosServices'
+import { Post,Get,Put,Delete } from './axiosServices'
 
 const token = localStorage.getItem('x-access-token')
 
@@ -22,12 +22,11 @@ export const addCartItemServices = (id:string|string[]) =>{
 }
 
 export const removeCartItemServices = (id:string|string[]) =>{
-  const data={}
   const headers = {
     'Content-Type':'application/json',
     'x-access-token':token
   }
-  return Post(`bookstore_user/remove_cart_item/${id}`,data,{headers})
+  return Delete(`bookstore_user/remove_cart_item/${id}`,headers)
 }
 
 
@@ -37,6 +36,15 @@ export const getCartItemsServices = () =>{
     'x-access-token':token
   }
   return Get(`bookstore_user/get_cart_items`,{headers})
+}
+
+export const updateCartItemQuantityServices = (cartItem_id:string,reqdata:object) =>{
+  console.log('reqdata is',reqdata)
+  const headers = {
+    'Content-Type':'application/json',
+    'x-access-token':token
+  }
+  return Put(`bookstore_user/cart_item_quantity/${cartItem_id}`,reqdata,{headers})
 }
 
 

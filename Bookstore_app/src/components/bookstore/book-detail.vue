@@ -8,7 +8,7 @@ import {
   addCartItemServices,
   removeCartItemServices,
   getFeedbackServices,
-  addFeedbackServices
+  addFeedbackServices,
 } from "@/services/bookstoreServices";
 
 export default {
@@ -16,9 +16,9 @@ export default {
   data: () => ({
     rating: 0,
     btnClicked: false,
-    feedbacks:[],
-    comment:'',
-    bookId:''
+    feedbacks: [],
+    comment: "",
+    bookId: "",
   }),
 
   components: {
@@ -34,6 +34,7 @@ export default {
         .then((response) => {
           console.log(response);
           console.log("Item added");
+          this.counterStore.getCartItems(this.bookId);
         })
         .catch((error) => {
           console.log("Some error");
@@ -41,50 +42,69 @@ export default {
         });
     },
 
-    removeItem() {
-      const id = this.$route.params.id;
-      removeCartItemServices(id)
-        .then((response) => {
-          console.log(response);
-          console.log("Item removed");
-        })
-        .catch((error) => {
-          console.log("Some error");
-          console.log(error);
-        });
-    },
 
     showFeedback() {
       const id = this.$route.params.id;
-      console.log("this is feedback func")
+      console.log("this is feedback func");
       getFeedbackServices(id)
         .then((response) => {
           console.log(response);
-          this.feedbacks = response.data.result
-          console.log('feedbacks',this.feedbacks)
+          this.feedbacks = response.data.result;
+          console.log("feedbacks", this.feedbacks);
         })
         .catch((error) => {
           console.log(error);
         });
     },
 
-    submitFeedback(){
+    submitFeedback() {
       const id = this.$route.params.id;
-        const reqData = {
-          comment:this.comment,
-          rating:this.rating
-        }
-        addFeedbackServices(id,reqData)
-        .then(response=>{
-          console.log('add feedback',response)
-          this.showFeedback()
-          this.comment = '';
+      const reqData = {
+        comment: this.comment,
+        rating: this.rating,
+      };
+      addFeedbackServices(id, reqData)
+        .then((response) => {
+          console.log("add feedback", response);
+          this.showFeedback();
+          this.comment = "";
           this.rating = undefined;
         })
-        .catch(error=>{
-          console.log(error)
-        })
-    }
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    incrementItem(cartItem_id, quantity) {
+      this.counterStore.increment(cartItem_id, quantity);
+    },
+
+    decrementItem (cartItem_id, quantity) {
+      this.counterStore.decrement(cartItem_id, quantity);
+    },
+
+    getCartItemId(bookId) {
+      console.log("all cart items", this.counterStore.cartItems);
+      const cartItem = this.counterStore.cartItems.find(
+        (item) => item.product_id._id === bookId
+      );
+      // console.log('item product id',item.product_id._id)
+      console.log("bookid", bookId);
+      console.log("this is cartitem", cartItem);
+      return cartItem ? cartItem._id : null;
+    },
+
+    inCart(bookId) {
+      if (
+        this.counterStore.cartItems.find(
+          (item) => item.product_id._id === bookId
+        )
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
 
   setup() {
@@ -99,10 +119,15 @@ export default {
       if (bookId.value) {
         book.value = homeStore.books.find((b) => b._id === bookId.value);
       }
+      counterStore.getCartItems(bookId.value);
     });
 
     return {
       counterStore,
+      book,
+      bookId,
+      route,
+      homeStore,
     };
   },
 
@@ -112,6 +137,13 @@ export default {
       const route = useRoute();
       // const bookId = route.params.id;
       return homeStore.books.find((book) => book._id === this.bookId);
+    },
+
+    getQuantity() {
+      const cartItem = this.counterStore.cartItems.find(
+        (item) => item.product_id._id === this.bookId
+      );
+      return cartItem ? cartItem.quantityToBuy : 0;
     },
   },
 
@@ -123,8 +155,8 @@ export default {
     }
   },
   created() {
-      const route = useRoute();
-      this.bookId = route.params.id
+    const route = useRoute();
+    this.bookId = route.params.id;
   },
 };
 </script>
@@ -141,29 +173,26 @@ export default {
       <div id="fp-div1">
         <div class="first-partition">
           <div class="book-img">
-            <img
-              src="/src/assets/bookstore_imgs/Image 11@2x.png"
-            />
+            <img src="/src/assets/bookstore_imgs/Image 11@2x.png" />
           </div>
           <div class="fp-btns">
             <v-btn
               class="fp-vbtn"
-              v-if="btnClicked === false"
+              v-if="!inCart(book?._id)"
               style="background-color: darkred"
               @click="addItemFunc()"
               >add to bag</v-btn
             >
-            <div class="counts-div" v-if="btnClicked === true">
-              <div
-                class="change-count"
-                @click="counterStore.decrement()"
-              >
+            <div class="counts-div" v-else>
+              <div class="change-count" @click="decrementItem(getCartItemId(book?._id), counterStore.count)">
                 -
               </div>
               <div class="count">{{ counterStore.count }}</div>
               <div
                 class="change-count"
-                @click="counterStore.increment()"
+                @click="
+                  incrementItem(getCartItemId(book?._id), counterStore.count)
+                "
               >
                 +
               </div>
@@ -176,8 +205,12 @@ export default {
         </div>
         <div class="second-partition">
           <div class="title-details">
-            <div><h6>{{ book?.bookName }}</h6></div>
-            <div class="mb-2"><label class="author-name">by {{ book?.author }}</label></div>
+            <div>
+              <h6>{{ book?.bookName }}</h6>
+            </div>
+            <div class="mb-2">
+              <label class="author-name">by {{ book?.author }}</label>
+            </div>
             <div class="rt-div">
               <div class="rating">
                 <label>4.5</label>
@@ -186,9 +219,7 @@ export default {
               <label>(20)</label>
             </div>
             <div class="bk-price">
-              <label class="d-price">
-               Rs. {{ book?.discountPrice }}
-              </label>
+              <label class="d-price"> Rs. {{ book?.discountPrice }} </label>
               <label class="total">
                 <s>Rs. {{ book?.price }}</s>
               </label>
@@ -235,11 +266,19 @@ export default {
           </div>
           <div class="cmnt-parent">
             <br />
-            <div class="comments" v-for="(feedback,index) in feedbacks" :key="index">
-              <br>
+            <div
+              class="comments"
+              v-for="(feedback, index) in feedbacks"
+              :key="index"
+            >
+              <br />
               <div class="n-l-div">
-                <div class="name-logo">{{feedback.user_id.fullName[0] }}</div>
-                <div><h5><b>{{ feedback.user_id?.fullName}}</b></h5></div>
+                <div class="name-logo">{{ feedback.user_id.fullName[0] }}</div>
+                <div>
+                  <h5>
+                    <b>{{ feedback.user_id?.fullName }}</b>
+                  </h5>
+                </div>
               </div>
               <div class="text-left">
                 <v-rating
@@ -247,11 +286,11 @@ export default {
                   readonly
                   active-color="#FFCE00"
                   class="comment-rating"
-                  style="margin-left: 20px;"
+                  style="margin-left: 20px"
                 ></v-rating>
               </div>
-              <p class="comment-line" style="margin-left: 35px;">
-                {{feedback.comment}}
+              <p class="comment-line" style="margin-left: 35px">
+                {{ feedback.comment }}
               </p>
             </div>
             <br /><br />
@@ -289,7 +328,7 @@ export default {
   justify-content: center;
   align-items: center;
   background-color: rgb(238, 238, 238);
-  font-size: 22px
+  font-size: 22px;
 }
 
 .container {
@@ -320,14 +359,14 @@ export default {
   align-items: center;
 }
 
-.book-img img{
-  width: 80%; 
-  height: 85%
+.book-img img {
+  width: 80%;
+  height: 85%;
 }
 
-#fp-div1{
-   display: flex; 
-   margin-top: 30px
+#fp-div1 {
+  display: flex;
+  margin-top: 30px;
 }
 
 .fp-btns {
@@ -401,17 +440,17 @@ div h5 {
   font-size: 20px;
 }
 
-#bd-title{
-   font-size: 18px; 
-   color: gray
+#bd-title {
+  font-size: 18px;
+  color: gray;
 }
 
-label.d-price{
+label.d-price {
   font-size: 35px;
   font-weight: 600;
 }
 
-.author-name{
+.author-name {
   font-size: 15px;
   color: gray;
   padding-bottom: 15px;
@@ -434,19 +473,19 @@ label.d-price{
   align-items: center;
 }
 
-.cmnt-parent{
+.cmnt-parent {
   height: 70vh;
-  overflow-y: auto
+  overflow-y: auto;
 }
 
 .comments h5 {
   font-size: 15px;
 }
 
-#sbm-bt{
-   background-color: #3371b5; 
-   color: white;
-   text-transform: capitalize
+#sbm-bt {
+  background-color: #3371b5;
+  color: white;
+  text-transform: capitalize;
 }
 
 .name-logo {
@@ -458,7 +497,7 @@ label.d-price{
   background-color: #f5f5f5;
 }
 
-.text-left{
-  height: 45px
+.text-left {
+  height: 45px;
 }
 </style>
