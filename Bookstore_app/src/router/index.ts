@@ -5,6 +5,7 @@ import Home from '../components/bookstore/home.vue'
 import BookDetail from '../components/bookstore/book-detail.vue'
 import Cart from '../components/authUser_access/cart.vue'
 import Profile from '../components/authUser_access/profile.vue' 
+import Wishlist from '../components/authUser_access/wishlist.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,13 @@ const router = createRouter({
       name:'profile',
       component:Profile
     },
+   
+    {
+      path:'/wishlist',
+      name:'wishlist',
+      component:Wishlist
+    },
+
 
     {
       path: '/about',
