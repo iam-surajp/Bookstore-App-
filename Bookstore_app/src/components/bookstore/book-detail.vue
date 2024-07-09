@@ -350,7 +350,7 @@ export default {
 
 .container {
   margin-top: 80px;
-  height: fit-content;
+  height: 100vh;
 }
 
 .main-content {

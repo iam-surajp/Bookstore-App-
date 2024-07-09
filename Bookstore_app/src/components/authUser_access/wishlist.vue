@@ -1,12 +1,36 @@
 <script lang="ts">
 import Header from "../bookstore/header.vue";
 import Footer from "../bookstore/footer.vue";
+import { getWishlistItemsServices } from "@/services/bookstoreServices";
+
+interface WishlistItem {
+  _id: string;
+  user_id: string;
+  product_id: {
+    _id: string;
+    description: string;
+    discountPrice: number;
+    bookImage: string | null;
+    bookName: string;
+    author: string;
+    quantity: number;
+    price: number;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  };
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
 
 export default {
   name: "Wishlist",
 
   data() {
-    return {};
+    return {
+      wishlist_items: [] as WishlistItem[]
+    };
   },
 
   components: {
@@ -14,9 +38,25 @@ export default {
     Footer,
   },
 
-  methods: {},
+  methods: {
+    getWishlistItems() {
+      getWishlistItemsServices()
+        .then(response => {
+          this.wishlist_items = response.data.result;
+          console.log(response);
+        })
+        .catch(error => {
+          console.error("Error fetching wishlist items:", error);
+        });
+    }
+  },
+
+  mounted() {
+    this.getWishlistItems();
+  }
 };
 </script>
+
 
 <template>
   <div class="page-wrapper">
@@ -27,47 +67,51 @@ export default {
         <div class="wl-box">
           <div class="wl-sub-box">
             <div class="wl-heading">
-              <h4>My Wishlist (02)</h4>
+              <h4>My Wishlist ({{ wishlist_items.length }})</h4>
             </div>
-            <div class="one-book-row">
-              <div id="two-partitions">
-                <div class="first-part">
-                  <div class="book-img">
-                    <img
-                      src="/src/assets/bookstore_imgs/Image 11@2x.png"
-                      width="65px"
-                      height="85px"
-                    />
-                  </div>
-                </div>
-                <div class="second-part">
-                  <div class="title">
-                    <div>
-                      <h6>bookname</h6>
-                    </div>
-                    <div class="mb-2">
-                      <label class="writer-name">by author</label>
-                    </div>
-                    <div class="all-price">
-                      <label class="disc-price"> Rs. 234 </label>
-                      <label class="total-price">
-                        <s>Rs. 231</s>
-                      </label>
+            <div v-for="(item, index) in wishlist_items" :key="item._id">
+              <div class="one-book-row" v-if="item.product_id !== null">
+                <div id="two-partitions">
+                  <div class="first-part">
+                    <div class="book-img">
+                      <img
+                        src="/src/assets/bookstore_imgs/Image 11@2x.png"
+                        width="65px"
+                        height="85px"
+                        alt="Placeholder Image"
+                      />
                     </div>
                   </div>
+                  <div class="second-part">
+                    <div class="title">
+                      <div>
+                        <h6>{{ item.product_id.bookName }}</h6>
+                      </div>
+                      <div class="mb-2">
+                        <label class="writer-name">by {{ item.product_id.author }}</label>
+                      </div>
+                      <div class="all-price">
+                        <label class="disc-price"> Rs. {{ item.product_id.discountPrice }} </label>
+                        <label class="total-price">
+                          <s>Rs. {{ item.product_id.price }}</s>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <v-icon>mdi-delete</v-icon>
+                <div>
+                  <v-icon>mdi-delete</v-icon>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <Footer />
   </div>
+    <!-- <Footer /> -->
 </template>
+
 
 <style scoped>
 .page-wrapper {

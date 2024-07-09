@@ -33,7 +33,6 @@ export default {
           console.log(response);
           this.allCartItems = response.data.result;
           this.cartItemsCount = this.allCartItems.length 
-          // console.log('all cart items',this.allCartItems)
         })
         .catch((error) => {
           console.log(error);
@@ -43,6 +42,14 @@ export default {
     logout_user(){
       localStorage.removeItem('x-access-token')
       this.$router.push('signup')
+    },
+
+    menuOption(title:string){
+      if (title === "Profile"){
+        this.$router.push('profile')
+      }else if (title === "My Wishlist"){
+        this.$router.push('wishlist')
+      }
     }
   },
 
@@ -113,7 +120,7 @@ export default {
                   </h6>
                 </div>
                 <v-list-item v-for="(item, i) in items" :key="i">
-                  <div class="profile-items">
+                  <div class="profile-items" @click="menuOption(item.title)">
                     <v-icon>{{ item.icon }}</v-icon>
                     <v-list-item-title>{{ item.title }}</v-list-item-title>
                   </div>

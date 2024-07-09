@@ -65,3 +65,14 @@ export const addFeedbackServices = (id:string|string[],data:Object) =>{
   }
   return Post(`bookstore_user/add/feedback/${id}`,data,{headers})
 }
+
+
+// wishlist
+
+export const getWishlistItemsServices = () =>{
+  const headers = {
+    'Content-Type':'application/json',
+    'x-access-token':token
+  }
+  return Get(`bookstore_user/get_wishlist_items`,{headers})
+}
