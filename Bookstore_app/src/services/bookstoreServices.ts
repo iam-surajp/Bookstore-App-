@@ -22,11 +22,13 @@ export const addCartItemServices = (id:string|string[]) =>{
 }
 
 export const removeCartItemServices = (id:string|string[]) =>{
+const t = localStorage.getItem('x-access-token')
+
   const headers = {
     'Content-Type':'application/json',
-    'x-access-token':token
+    'x-access-token':t
   }
-  return Delete(`bookstore_user/remove_cart_item/${id}`,headers)
+  return Delete(`bookstore_user/remove_cart_item/${id}`,{headers})
 }
 
 

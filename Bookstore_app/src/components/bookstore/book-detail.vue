@@ -88,7 +88,6 @@ export default {
       const cartItem = this.counterStore.cartItems.find(
         (item) => item.product_id._id === bookId
       );
-      // console.log('item product id',item.product_id._id)
       console.log("bookid", bookId);
       console.log("this is cartitem", cartItem);
       return cartItem ? cartItem._id : null;

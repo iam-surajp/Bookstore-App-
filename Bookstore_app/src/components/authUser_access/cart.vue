@@ -1,6 +1,9 @@
 <script lang="ts">
 import Header from "../bookstore/header.vue";
-import { getCartItemsServices } from "@/services/bookstoreServices";
+import { getCartItemsServices, removeCartItemServices } from "@/services/bookstoreServices";
+import { useCounterStore } from "@/stores/counter";
+import { ref, onMounted } from 'vue';
+
 export default {
   name: "Cart",
 
@@ -8,7 +11,8 @@ export default {
     return {
       cart_items: [],
       pl_ord_clkd: false,
-      cntinue_btn_clkd:false
+      cntinue_btn_clkd: false,
+      itemCounts: {}
     };
   },
 
@@ -22,11 +26,46 @@ export default {
         .then((response) => {
           console.log(response);
           this.cart_items = response.data.result;
+          this.cart_items.forEach(item => {
+            this.itemCounts[item._id] = item.quantityToBuy;
+          });
         })
         .catch((error) => {
           console.log(error);
         });
     },
+
+    removeitem(id: string) {
+      removeCartItemServices(id)
+        .then(response => {
+          console.log('Cart item removed:', response);
+          this.cart_items = this.cart_items.filter(item => item._id !== id);
+          delete this.itemCounts[id];
+        })
+        .catch(error => {
+          console.log('Error removing item:', error);
+        });
+    },
+
+    incrementItem(cartItem_id, quantity) {
+      this.counterStore.increment(cartItem_id, quantity);
+      this.itemCounts[cartItem_id]++;
+    },
+
+    decrementItem(cartItem_id, quantity) {
+      if (this.itemCounts[cartItem_id] > 0) {
+        this.counterStore.decrement(cartItem_id, quantity);
+        this.itemCounts[cartItem_id]--;
+      }
+    },
+  },
+
+  setup() {
+    const counterStore = useCounterStore();
+
+    return {
+      counterStore,
+    };
   },
 
   mounted() {
@@ -37,16 +76,15 @@ export default {
 
 <template>
   <Header />
-
   <div class="parent">
     <div class="container">
       <h4>Home / My cart</h4>
       <div class="cart-item">
         <div class="item-info">
-          <div class="h3-div"><h3>My cart (1)</h3></div>
+          <div class="h3-div"><h3>My cart ({{ cart_items.length }})</h3></div>
           <div class="loc-div">BridgeLabz Solutions LLP</div>
         </div>
-        <div id="two-partitions" v-for="(item, index) in cart_items">
+        <div id="two-partitions" v-for="(item, index) in cart_items" :key="item._id">
           <div class="first-part">
             <div class="book-img">
               <img
@@ -78,11 +116,11 @@ export default {
             <br />
             <div class="ct-parent">
               <div class="counts-div">
-                <div class="change-count" @click="">-</div>
-                <div class="count">1</div>
-                <div class="change-count" @click="">+</div>
+                <div class="change-count" @click="decrementItem(item._id, itemCounts[item._id])">-</div>
+                <div class="count">{{ itemCounts[item._id] }}</div>
+                <div class="change-count" @click="incrementItem(item._id, itemCounts[item._id])">+</div>
               </div>
-              <div class="remove-item">Remove</div>
+              <div class="remove-item" @click="removeitem(item._id)">Remove</div>
             </div>
             <br />
           </div>
@@ -162,7 +200,7 @@ export default {
         <label v-if="!cntinue_btn_clkd">Order Summary</label>
         <template v-else>
           <label>Order Summary</label>
-        <div id="two-partitions" v-for="(item, index) in cart_items">
+        <div id="two-partitions" v-for="(item, index) in cart_items" :key="item._id">
           <div class="first-part">
             <div class="book-img">
               <img
@@ -201,6 +239,7 @@ export default {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .parent {
@@ -346,6 +385,7 @@ div .disc-price {
 
 .remove-item {
   margin-left: 25px;
+  cursor: pointer;
 }
 
 .newAddr-div {

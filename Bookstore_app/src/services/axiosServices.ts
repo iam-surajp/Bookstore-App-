@@ -11,5 +11,5 @@ export const Get = (url:string, config = {}) =>
 export const Put = (url:string,data:object, config = {}) => 
     axios.put(BASE_URL + url,data, config)
 
-export const Delete = (url:string,data:object, config = {}) => 
+export const Delete = (url:string, config = {}) => 
     axios.delete(BASE_URL + url,config)
