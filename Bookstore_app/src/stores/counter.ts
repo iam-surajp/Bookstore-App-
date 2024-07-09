@@ -2,10 +2,18 @@ import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { updateCartItemQuantityServices, getCartItemsServices, removeCartItemServices } from '@/services/bookstoreServices';
 
+interface CartItem {
+  _id: string;
+  quantityToBuy: number;
+  product_id: {
+    _id: string;
+  };
+}
+
 export const useCounterStore = defineStore('counter', () => {
   const count = ref(0);
   const doubleCount = computed(() => count.value * 2);
-  const cartItems = ref([]);
+  const cartItems = ref<CartItem[]>([]);
 
   function increment(cartItem_id: string, quantity: number) {
     count.value = quantity + 1;
@@ -15,7 +23,6 @@ export const useCounterStore = defineStore('counter', () => {
     updateCartItemQuantityServices(cartItem_id, reqData)
       .then(response => {
         console.log('Quantity increased:', response);
-        // Update the cartItems array reactively
         const item = cartItems.value.find(item => item._id === cartItem_id);
         if (item) {
           item.quantityToBuy = count.value;
@@ -33,7 +40,6 @@ export const useCounterStore = defineStore('counter', () => {
         removeCartItemServices(cartItem_id)
           .then(response => {
             console.log('Cart item removed:', response);
-            // Remove item from cartItems reactively
             cartItems.value = cartItems.value.filter(item => item._id !== cartItem_id);
           })
           .catch(error => {
@@ -46,7 +52,6 @@ export const useCounterStore = defineStore('counter', () => {
         updateCartItemQuantityServices(cartItem_id, reqData)
           .then(response => {
             console.log('Quantity decreased:', response);
-            // Update the cartItems array reactively
             const item = cartItems.value.find(item => item._id === cartItem_id);
             if (item) {
               item.quantityToBuy = count.value;
@@ -62,7 +67,7 @@ export const useCounterStore = defineStore('counter', () => {
   function getCartItems(bookId: string | null) {
     getCartItemsServices()
       .then(response => {
-        cartItems.value = response.data.result;
+        cartItems.value = response.data.result as CartItem[];
         if (bookId) {
           const cartItem = cartItems.value.find(item => item.product_id._id === bookId);
           count.value = cartItem ? cartItem.quantityToBuy : 0;
@@ -75,4 +80,5 @@ export const useCounterStore = defineStore('counter', () => {
 
   return { count, doubleCount, increment, decrement, getCartItems, cartItems };
 });
+
 

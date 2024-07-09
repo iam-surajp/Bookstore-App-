@@ -11,15 +11,42 @@ import {
   addFeedbackServices,
 } from "@/services/bookstoreServices";
 
+interface Feedback {
+  user_id: {
+    fullName: string;
+  };
+  rating: number;
+  comment: string;
+}
+
+interface Book {
+  _id: string;
+  bookName: string;
+  author: string;
+  discountPrice: number;
+  price: number;
+}
+
+interface CartItem {
+  _id: string;
+  product_id: {
+    _id: string;
+  };
+  quantityToBuy: number;
+}
+
+
 export default {
   name: "BookDetail",
-  data: () => ({
-    rating: 0,
-    btnClicked: false,
-    feedbacks: [],
-    comment: "",
-    bookId: "",
-  }),
+  data() {
+    return {
+      rating: 0,
+      btnClicked: false,
+      feedbacks: [] as Feedback[],
+      comment: "",
+      bookId: "",
+    };
+  },
 
   components: {
     Header,
@@ -28,7 +55,7 @@ export default {
   methods: {
     addItemFunc() {
       this.btnClicked = true;
-      const id = this.$route.params.id;
+      const id = this.$route.params.id as string;
       console.log("id is", id);
       addCartItemServices(id)
         .then((response) => {
@@ -42,9 +69,8 @@ export default {
         });
     },
 
-
     showFeedback() {
-      const id = this.$route.params.id;
+      const id = this.$route.params.id as string;
       console.log("this is feedback func");
       getFeedbackServices(id)
         .then((response) => {
@@ -58,7 +84,7 @@ export default {
     },
 
     submitFeedback() {
-      const id = this.$route.params.id;
+      const id = this.$route.params.id as string;
       const reqData = {
         comment: this.comment,
         rating: this.rating,
@@ -68,41 +94,35 @@ export default {
           console.log("add feedback", response);
           this.showFeedback();
           this.comment = "";
-          this.rating = undefined;
+          this.rating = 0; 
         })
         .catch((error) => {
           console.log(error);
         });
     },
 
-    incrementItem(cartItem_id, quantity) {
+    incrementItem(cartItem_id: string, quantity: number) {
       this.counterStore.increment(cartItem_id, quantity);
     },
 
-    decrementItem (cartItem_id, quantity) {
+    decrementItem(cartItem_id: string, quantity: number) {
       this.counterStore.decrement(cartItem_id, quantity);
     },
 
-    getCartItemId(bookId) {
+    getCartItemId(bookId: string) {
       console.log("all cart items", this.counterStore.cartItems);
       const cartItem = this.counterStore.cartItems.find(
-        (item) => item.product_id._id === bookId
+        (item: any) => item.product_id._id === bookId
       );
       console.log("bookid", bookId);
       console.log("this is cartitem", cartItem);
       return cartItem ? cartItem._id : null;
     },
 
-    inCart(bookId) {
-      if (
-        this.counterStore.cartItems.find(
-          (item) => item.product_id._id === bookId
-        )
-      ) {
-        return true;
-      } else {
-        return false;
-      }
+    inCart(bookId: string) {
+      return !!this.counterStore.cartItems.find(
+        (item: any) => item.product_id._id === bookId
+      );
     },
   },
 
@@ -116,7 +136,7 @@ export default {
     onMounted(() => {
       bookId.value = route.params.id as string;
       if (bookId.value) {
-        book.value = homeStore.books.find((b) => b._id === bookId.value);
+        book.value = homeStore.books.find((b: any) => b._id === bookId.value);
       }
       counterStore.getCartItems(bookId.value);
     });
@@ -131,16 +151,15 @@ export default {
   },
 
   computed: {
-    book() {
+    book(): Book | null {
       const homeStore = useHomeStore();
       const route = useRoute();
-      // const bookId = route.params.id;
-      return homeStore.books.find((book) => book._id === this.bookId);
+      return homeStore.books.find((book: any) => book._id === this.bookId) || null;
     },
 
     getQuantity() {
       const cartItem = this.counterStore.cartItems.find(
-        (item) => item.product_id._id === this.bookId
+        (item: any) => item.product_id._id === this.bookId
       );
       return cartItem ? cartItem.quantityToBuy : 0;
     },
@@ -155,7 +174,7 @@ export default {
   },
   created() {
     const route = useRoute();
-    this.bookId = route.params.id;
+    this.bookId = route.params.id as string;
   },
 };
 </script>
@@ -189,9 +208,7 @@ export default {
               <div class="count">{{ counterStore.count }}</div>
               <div
                 class="change-count"
-                @click="
-                  incrementItem(getCartItemId(book?._id), counterStore.count)
-                "
+                @click="incrementItem(getCartItemId(book?._id), counterStore.count)"
               >
                 +
               </div>
@@ -299,6 +316,7 @@ export default {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .counts-div {

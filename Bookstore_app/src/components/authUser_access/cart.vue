@@ -4,15 +4,27 @@ import { getCartItemsServices, removeCartItemServices } from "@/services/booksto
 import { useCounterStore } from "@/stores/counter";
 import { ref, onMounted } from 'vue';
 
+// Define interfaces for the data structure
+interface CartItem {
+  _id: string;
+  product_id: {
+    bookName: string;
+    author: string;
+    discountPrice: number;
+    price: number;
+  };
+  quantityToBuy: number;
+}
+
 export default {
   name: "Cart",
 
   data() {
     return {
-      cart_items: [],
+      cart_items: [] as CartItem[],  // Explicitly type cart_items
       pl_ord_clkd: false,
       cntinue_btn_clkd: false,
-      itemCounts: {}
+      itemCounts: {} as Record<string, number>  // Explicitly type itemCounts
     };
   },
 
@@ -26,7 +38,7 @@ export default {
         .then((response) => {
           console.log(response);
           this.cart_items = response.data.result;
-          this.cart_items.forEach(item => {
+          this.cart_items.forEach((item: CartItem) => {
             this.itemCounts[item._id] = item.quantityToBuy;
           });
         })
@@ -47,12 +59,12 @@ export default {
         });
     },
 
-    incrementItem(cartItem_id, quantity) {
+    incrementItem(cartItem_id: string, quantity: number) {  // Add parameter types
       this.counterStore.increment(cartItem_id, quantity);
       this.itemCounts[cartItem_id]++;
     },
 
-    decrementItem(cartItem_id, quantity) {
+    decrementItem(cartItem_id: string, quantity: number) {  // Add parameter types
       if (this.itemCounts[cartItem_id] > 0) {
         this.counterStore.decrement(cartItem_id, quantity);
         this.itemCounts[cartItem_id]--;
@@ -227,15 +239,22 @@ export default {
                 </label>
               </div>
             </div>
+            <br />
+            <div class="ct-parent">
+              <div class="counts-div">
+                <div class="change-count" @click="decrementItem(item._id, itemCounts[item._id])">-</div>
+                <div class="count">{{ itemCounts[item._id] }}</div>
+                <div class="change-count" @click="incrementItem(item._id, itemCounts[item._id])">+</div>
+              </div>
+            </div>
+            <br />
           </div>
         </div>
         <div class="btns-div">
-              <v-btn class="cart-btn" @click=""
-                >Checkout</v-btn>
-            </div>
+          <v-btn class="cart-btn">Checkout</v-btn>
+        </div>
         </template>
       </div>
-      <br />
     </div>
   </div>
 </template>
