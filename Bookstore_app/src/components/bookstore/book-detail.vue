@@ -368,8 +368,8 @@ export default {
 }
 
 .book-img {
-  width: 80%;
-  height: 90%;
+  width: 330px;
+  height: 460px;
   border: 1px solid rgb(167, 167, 167);
   display: flex;
   justify-content: center;
@@ -377,8 +377,8 @@ export default {
 }
 
 .book-img img {
-  width: 80%;
-  height: 85%;
+  width: 300px;
+  height: 430px;
 }
 
 #fp-div1 {
@@ -401,7 +401,7 @@ export default {
 
 .second-partition {
   width: 60%;
-  height: 100vh;
+  height: 100%;
 }
 
 .bk-price {
@@ -516,5 +516,121 @@ label.d-price {
 
 .text-left {
   height: 45px;
+}
+
+
+@media screen and (max-width:576px) {
+  #fp-div1{
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: auto;
+    justify-content: center;
+  }
+
+  .first-partition{
+    width: 100%;
+    height: fit-content;
+    margin-bottom: 10px;
+    margin-top: 10px
+  }
+
+  .second-partition{
+    width: 100%;
+    justify-content: center;
+    align-items: center
+  }
+
+  .book-img{
+    height: 370px;
+    width: 200px
+  }
+
+  .book-img img {
+  width: 220px;
+  height: 300px;
+}
+
+  .title-details{
+    width: 100%;
+    justify-content: center;
+    text-align: center
+  }
+
+  .rt-div{
+     justify-content: center
+  }
+
+  .bk-price{
+      justify-content: center;
+  }
+}
+
+@media screen and (max-width:768px) {
+  #fp-div1{
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: auto;
+    justify-content: center;
+    /* border: 1px solid green; */
+  }
+
+  .first-partition{
+    width: 100%;
+    height: fit-content;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    /* border: 1px solid indianred; */
+  }
+
+  .second-partition{
+    width: 100%;
+    justify-content: center;
+    align-items: center
+  }
+
+  .book-img{
+    height: 460px;
+    width: 330px;
+  }
+
+  .book-img img {
+  width: 300px;
+  height: 430px;
+}
+
+  .title-details{
+    width: 100%;
+    justify-content: center;
+    text-align: center
+  }
+
+  .rt-div{
+     justify-content: center
+  }
+
+  .bk-price{
+      justify-content: center;
+  }
+}
+
+
+@media screen and (max-width:1200px) {
+
+  #fp-div1{
+    gap: 30px;
+  }
+
+  .book-img{
+    width: 270px;
+    height: 400px;
+    
+  }
+
+  .book-img img {
+  width: 250px;
+  height: 380px;
+}
 }
 </style>

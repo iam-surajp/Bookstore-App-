@@ -108,8 +108,8 @@ export default {
             <label>(20)</label>
           </div>
           <div class="bk-price">
-            <label
-              ><b>Rs. {{ book.discountPrice }}</b></label
+            <label class="mr-2"
+              ><b>Rs.{{ book.discountPrice }} </b></label
             >
             <label
               ><s>Rs.{{ book.price }}</s></label
@@ -118,11 +118,11 @@ export default {
         </div>
       </div>
     </div>
-    <div class="text-center">
+    <div class="pagination">
       <v-pagination
         v-model="page"
-        :length="15"
-        :total-visible="7"
+        :length="7"
+        :total-visible="3"
       ></v-pagination>
     </div>
     <br />
@@ -223,7 +223,6 @@ select{
 }
 
 .bk-price {
-  display: flex;
   gap: 10px;
 }
 
@@ -239,4 +238,87 @@ select{
   margin: auto;
   font-size: small;
 }
+
+
+@media only screen and (max-width:440px){
+  .books-container{
+    width: 100%;
+  }
+
+  .book-card{
+    width: 80%;
+  }
+}
+
+
+@media screen and ( max-width:576px){
+  .book-card{
+    width:40%;
+    min-width: 150px;
+  }
+
+  .books-container{
+    justify-content: center;
+    gap:15px
+  }
+
+  .book-content h6{
+    text-overflow: ellipsis;
+  }
+
+  .title-sort{
+    flex-direction: column
+  }
+  
+  .pagination{
+    width: 20%;
+    margin:auto
+  }
+}
+
+@media only screen and (max-width:768px) {
+  .book-card{
+    width: 35%;
+  }
+
+  .books-container{
+    gap:20px
+  }
+}
+
+@media only screen and (max-width:992px){
+
+  .books-container{
+    justify-content: center;
+    width: 100%;
+    gap: 20px;
+    padding: 5px;
+  }
+
+  .main{
+    width: 100%;
+  }
+
+  .title-sort{
+    padding:0% 5% 0% 8% ;
+  }
+}
+
+
+@media only screen and (min-width:993px){
+  .book-card{
+    width: 250px;
+  }
+  .books-container{
+    justify-content: center;
+  }
+  .main{
+    width: 85%;
+  }
+
+  .title-sort{
+    padding:0% 5% 0% 8% ;
+  }
+}
+
 </style>

@@ -227,5 +227,18 @@ label {
   }
 }
 
+@media screen and (max-width:576px) {
+  .title{
+    /* display: none; */
+    font-size: large;
+  }
+
+  .header-div{
+    width: 100%;
+    justify-content: center;
+    gap: 10px;
+  }
+}
+
 
 </style>

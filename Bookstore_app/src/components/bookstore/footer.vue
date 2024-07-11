@@ -20,8 +20,8 @@
 #footer {
   height: 50px;
   display: flex;
-  position: relative;
-  bottom: 0;
+  /* position: fixed;
+  bottom: 0; */
 }
 
 .footer-text {

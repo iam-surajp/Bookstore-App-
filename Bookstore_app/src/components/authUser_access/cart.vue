@@ -3,6 +3,7 @@ import Header from "../bookstore/header.vue";
 import { getCartItemsServices, removeCartItemServices } from "@/services/bookstoreServices";
 import { useCounterStore } from "@/stores/counter";
 import { ref, onMounted } from 'vue';
+import Footer from "../bookstore/footer.vue";
 
 // Define interfaces for the data structure
 interface CartItem {
@@ -29,7 +30,7 @@ export default {
   },
 
   components: {
-    Header,
+    Header,Footer
   },
 
   methods: {
@@ -256,7 +257,10 @@ export default {
         </template>
       </div>
     </div>
+    <div style="width: 100%;" > <Footer/></div>
   </div>
+  
+ 
 </template>
 
 
@@ -272,7 +276,7 @@ export default {
   width: 80%;
   height: fit-content;
   margin: auto;
-  /* border: 1px solid black; */
+  margin-bottom: 100px;
 }
 
 .cart-item {
@@ -419,5 +423,61 @@ div .disc-price {
 .v-input--density-default {
   --v-input-control-height: 0px;
   --v-input-padding-top: 0px;
+}
+
+
+@media screen and (max-width:576px) {
+  
+  .container{
+    width: 100%;
+  }
+  
+  .cart-item{
+    width:100%
+  }
+
+  .addr-info{
+    width: 100%;
+  }
+
+  .other-info{
+    width: 100%;
+  }
+
+  .item-info{
+    padding:0px;
+    padding-bottom: 10px;
+  }
+
+  .loc-div{
+    padding: 2px;
+  }
+
+  .newAddr-div{
+    padding: 1px;
+  }
+  
+  .person-info{
+    margin-top: 10px;
+  }
+}
+
+@media screen and (max-width:992px){
+    
+  .container{
+    width: 90%;
+  }
+  
+  .cart-item{
+    width:100%
+  }
+
+  .addr-info{
+    width: 100%;
+  }
+
+  .other-info{
+    width: 100%;
+  }
 }
 </style>

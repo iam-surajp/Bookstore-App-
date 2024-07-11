@@ -15,13 +15,7 @@ interface WishlistItem {
     author: string;
     quantity: number;
     price: number;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
   };
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
 }
 
 export default {
@@ -43,6 +37,7 @@ export default {
       getWishlistItemsServices()
         .then(response => {
           this.wishlist_items = response.data.result;
+          this.wishlist_items = this.wishlist_items.filter(item=>item.product_id!==null)
           console.log(response);
         })
         .catch(error => {
@@ -70,7 +65,7 @@ export default {
               <h4>My Wishlist ({{ wishlist_items.length }})</h4>
             </div>
             <div v-for="(item, index) in wishlist_items" :key="item._id">
-              <div class="one-book-row" v-if="item.product_id !== null">
+              <div class="one-book-row" >
                 <div id="two-partitions">
                   <div class="first-part">
                     <div class="book-img">
@@ -99,7 +94,7 @@ export default {
                     </div>
                   </div>
                 </div>
-                <div>
+                <div class="delete-icon">
                   <v-icon>mdi-delete</v-icon>
                 </div>
               </div>
@@ -109,7 +104,7 @@ export default {
       </div>
     </div>
   </div>
-    <!-- <Footer /> -->
+    <Footer />
 </template>
 
 
@@ -118,10 +113,10 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+
 }
 
 .main {
-  /* flex: 1; */
   width: 100%;
   height: 100vh;
   margin-top: 65px;
@@ -132,7 +127,6 @@ export default {
   width: 75%;
   height: fit-content;
   margin: auto;
-  /* border: 1px solid green; */
 }
 
 #two-partitions {
@@ -143,7 +137,6 @@ export default {
 }
 
 .wl-box{
-     /* border: 1px solid #E4E4E4;  */
      padding: 20px
 }
 
@@ -189,5 +182,42 @@ div .disc-price {
 h4 {
   font-size: 18px;
   font-weight: bold;
+}
+
+@media screen and (max-width:600px) {
+
+  .container{
+    width: 100%;
+  }
+
+  .container h3{
+    margin-left: 5%;
+  }
+
+  .title{
+    width: 150px;
+  }
+}
+
+@media screen and (max-width:992px) {
+  .container{
+    width: 100%;
+  }
+
+  .container h3{
+    margin-left: 5%;
+  }
+}
+
+@media screen and (max-width:376px) {
+  .one-book-row{
+    flex-direction: column;
+    align-items: flex-start
+  }
+
+  .delete-icon{
+    width: 100%;
+    text-align: center;
+  }
 }
 </style>
