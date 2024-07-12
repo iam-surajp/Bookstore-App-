@@ -76,3 +76,22 @@ export const getWishlistItemsServices = () =>{
   }
   return Get(`bookstore_user/get_wishlist_items`,{headers})
 }
+
+
+export const addWishlistItemServices = (product_id:string|string[]) =>{
+  const data = {}
+  const headers = {
+    'Content-Type':'application/json',
+    'x-access-token':token
+  }
+  return Post(`bookstore_user/add_wish_list/${product_id}`,data,{headers})
+}
+
+
+export const removeWishlistItemServices = (product_id:string|string[]) =>{
+  const headers = {
+    'Content-Type':'application/json',
+    'x-access-token':token
+  }
+  return Delete(`bookstore_user/remove_wishlist_item/${product_id}`,{headers})
+}

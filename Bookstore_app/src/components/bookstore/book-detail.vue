@@ -6,9 +6,9 @@ import { useHomeStore } from "@/stores/homeStore";
 import { useCounterStore } from "@/stores/counter";
 import {
   addCartItemServices,
-  removeCartItemServices,
   getFeedbackServices,
   addFeedbackServices,
+  addWishlistItemServices,
 } from "@/services/bookstoreServices";
 
 interface Feedback {
@@ -34,7 +34,6 @@ interface CartItem {
   };
   quantityToBuy: number;
 }
-
 
 export default {
   name: "BookDetail",
@@ -94,7 +93,7 @@ export default {
           console.log("add feedback", response);
           this.showFeedback();
           this.comment = "";
-          this.rating = 0; 
+          this.rating = 0;
         })
         .catch((error) => {
           console.log(error);
@@ -123,6 +122,17 @@ export default {
       return !!this.counterStore.cartItems.find(
         (item: any) => item.product_id._id === bookId
       );
+    },
+
+    
+    addWishlistItemFunc(product_id){
+      addWishlistItemServices(product_id)
+      .then(response=>{
+        console.log(response)
+      })
+      .catch(error=>{
+        console.log(error)
+      })
     },
   },
 
@@ -154,7 +164,9 @@ export default {
     book(): Book | null {
       const homeStore = useHomeStore();
       const route = useRoute();
-      return homeStore.books.find((book: any) => book._id === this.bookId) || null;
+      return (
+        homeStore.books.find((book: any) => book._id === this.bookId) || null
+      );
     },
 
     getQuantity() {
@@ -202,19 +214,24 @@ export default {
               >add to bag</v-btn
             >
             <div class="counts-div" v-else>
-              <div class="change-count" @click="decrementItem(getCartItemId(book?._id), counterStore.count)">
+              <div
+                class="change-count"
+                @click="
+                  decrementItem(getCartItemId(book?._id), counterStore.count)
+                "
+              >
                 -
               </div>
               <div class="count">{{ counterStore.count }}</div>
               <div
                 class="change-count"
-                @click="incrementItem(getCartItemId(book?._id), counterStore.count)"
-              >
+                @click="
+                  incrementItem(getCartItemId(book?._id), counterStore.count)">
                 +
               </div>
             </div>
-            <v-btn class="fp-vbtn" style="background-color: black">
-              <v-icon>mdi-heart</v-icon>
+            <v-btn class="fp-vbtn" id="wl-btn" style="background-color: black" @click="addWishlistItemFunc(book._id)">
+              <v-icon>mdi-heart </v-icon>
               <span>wishlist</span>
             </v-btn>
           </div>
@@ -317,7 +334,6 @@ export default {
   </div>
 </template>
 
-
 <style scoped>
 .counts-div {
   display: flex;
@@ -361,7 +377,7 @@ export default {
 
 .first-partition {
   width: 40%;
-  height: 70vh;
+  height: fit-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -518,9 +534,8 @@ label.d-price {
   height: 45px;
 }
 
-
-@media screen and (max-width:576px) {
-  #fp-div1{
+@media screen and (max-width: 576px) {
+  #fp-div1 {
     flex-direction: column;
     align-items: center;
     width: 100%;
@@ -528,109 +543,104 @@ label.d-price {
     justify-content: center;
   }
 
-  .first-partition{
+  .first-partition {
     width: 100%;
     height: fit-content;
     margin-bottom: 10px;
-    margin-top: 10px
+    margin-top: 10px;
   }
 
-  .second-partition{
+  .second-partition {
     width: 100%;
     justify-content: center;
-    align-items: center
+    align-items: center;
   }
 
-  .book-img{
+  .book-img {
     height: 370px;
-    width: 200px
+    width: 200px;
   }
 
   .book-img img {
-  width: 220px;
-  height: 300px;
-}
+    width: 220px;
+    height: 300px;
+  }
 
-  .title-details{
+  .title-details {
     width: 100%;
     justify-content: center;
-    text-align: center
+    text-align: center;
   }
 
-  .rt-div{
-     justify-content: center
+  .rt-div {
+    justify-content: center;
   }
 
-  .bk-price{
-      justify-content: center;
+  .bk-price {
+    justify-content: center;
   }
 }
 
-@media screen and (max-width:768px) {
-  #fp-div1{
+@media screen and (max-width: 768px) {
+  #fp-div1 {
     flex-direction: column;
     align-items: center;
     width: 100%;
     margin: auto;
     justify-content: center;
-    /* border: 1px solid green; */
   }
 
-  .first-partition{
+  .first-partition {
     width: 100%;
     height: fit-content;
     margin-bottom: 20px;
     margin-top: 10px;
-    /* border: 1px solid indianred; */
   }
 
-  .second-partition{
+  .second-partition {
     width: 100%;
     justify-content: center;
-    align-items: center
+    align-items: center;
   }
 
-  .book-img{
+  .book-img {
     height: 460px;
     width: 330px;
   }
 
   .book-img img {
-  width: 300px;
-  height: 430px;
-}
+    width: 300px;
+    height: 430px;
+  }
 
-  .title-details{
+  .title-details {
     width: 100%;
     justify-content: center;
-    text-align: center
+    text-align: center;
   }
 
-  .rt-div{
-     justify-content: center
+  .rt-div {
+    justify-content: center;
   }
 
-  .bk-price{
-      justify-content: center;
+  .bk-price {
+    justify-content: center;
   }
 }
 
-
-@media screen and (max-width:1200px) {
-
-  #fp-div1{
+@media screen and (max-width: 1200px) {
+  #fp-div1 {
     gap: 30px;
   }
 
-  .book-img{
+  .book-img {
     width: 270px;
     height: 400px;
-    
   }
 
   .book-img img {
-  width: 250px;
-  height: 380px;
-}
+    width: 250px;
+    height: 380px;
+  }
 }
 </style>

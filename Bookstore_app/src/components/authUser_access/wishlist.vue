@@ -1,57 +1,17 @@
-<script lang="ts">
+<script lang="ts" setup>
 import Header from "../bookstore/header.vue";
 import Footer from "../bookstore/footer.vue";
-import { getWishlistItemsServices } from "@/services/bookstoreServices";
+import { useHomeStore } from "@/stores/homeStore";
+import { onMounted, ref,computed } from "vue";
 
-interface WishlistItem {
-  _id: string;
-  user_id: string;
-  product_id: {
-    _id: string;
-    description: string;
-    discountPrice: number;
-    bookImage: string | null;
-    bookName: string;
-    author: string;
-    quantity: number;
-    price: number;
-  };
-}
+const homeStore = useHomeStore()
 
-export default {
-  name: "Wishlist",
+onMounted(() => {
+    homeStore.getWishlistItems(); 
+});
 
-  data() {
-    return {
-      wishlist_items: [] as WishlistItem[]
-    };
-  },
-
-  components: {
-    Header,
-    Footer,
-  },
-
-  methods: {
-    getWishlistItems() {
-      getWishlistItemsServices()
-        .then(response => {
-          this.wishlist_items = response.data.result;
-          this.wishlist_items = this.wishlist_items.filter(item=>item.product_id!==null)
-          console.log(response);
-        })
-        .catch(error => {
-          console.error("Error fetching wishlist items:", error);
-        });
-    }
-  },
-
-  mounted() {
-    this.getWishlistItems();
-  }
-};
+const wishlist_Items = computed(() => homeStore.wishlist_items);
 </script>
-
 
 <template>
   <div class="page-wrapper">
@@ -62,9 +22,9 @@ export default {
         <div class="wl-box">
           <div class="wl-sub-box">
             <div class="wl-heading">
-              <h4>My Wishlist ({{ wishlist_items.length }})</h4>
+              <h4>My Wishlist ({{ wishlist_Items.length }})</h4>
             </div>
-            <div v-for="(item, index) in wishlist_items" :key="item._id">
+            <div v-for="(item, index) in wishlist_Items" :key="item.product_id._id">
               <div class="one-book-row" >
                 <div id="two-partitions">
                   <div class="first-part">
@@ -95,7 +55,7 @@ export default {
                   </div>
                 </div>
                 <div class="delete-icon">
-                  <v-icon>mdi-delete</v-icon>
+                  <v-icon @click="homeStore.deleteWishlistItem(item.product_id._id)">mdi-delete</v-icon>
                 </div>
               </div>
             </div>

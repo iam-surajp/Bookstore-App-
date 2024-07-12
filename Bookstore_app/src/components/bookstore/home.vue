@@ -88,7 +88,7 @@ export default {
         </select>
       </div>
     </div>
-    <div class="books-container">
+    <div class="books-container" v-if="books.length!=0">
       <div
         class="book-card"
         v-for="(book, index) in sortedBooks"
@@ -117,6 +117,16 @@ export default {
           </div>
         </div>
       </div>
+    </div>
+    <div v-else>
+      <div class="loader">
+        <v-progress-circular
+      :size="50"
+      color="primary"
+      indeterminate
+    ></v-progress-circular>
+    Fetching books... 
+  </div>
     </div>
     <div class="pagination">
       <v-pagination
@@ -237,6 +247,15 @@ select{
   width: 80%;
   margin: auto;
   font-size: small;
+}
+
+.loader{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20%;
+  padding-bottom: 10%;
+  gap: 10px;
 }
 
 
