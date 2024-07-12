@@ -1,7 +1,7 @@
 <script lang="ts">
 import Header from "./header.vue";
 import { useRoute } from "vue-router";
-import { onMounted, ref } from "vue";
+import { onMounted, ref,computed } from "vue";
 import { useHomeStore } from "@/stores/homeStore";
 import { useCounterStore } from "@/stores/counter";
 import {
@@ -124,6 +124,11 @@ export default {
       );
     },
 
+    inWishlist(bookId){
+      this.homeStore.getWishlistItems()
+      return !!this.homeStore.wishlist_items.find((item:any)=> item.product_id._id === bookId);
+    },
+
     
     addWishlistItemFunc(product_id){
       addWishlistItemServices(product_id)
@@ -149,7 +154,10 @@ export default {
         book.value = homeStore.books.find((b: any) => b._id === bookId.value);
       }
       counterStore.getCartItems(bookId.value);
+      homeStore.getWishlistItems();
     });
+
+    const wishlist_Items = computed(() => homeStore.wishlist_items);
 
     return {
       counterStore,
@@ -157,6 +165,7 @@ export default {
       bookId,
       route,
       homeStore,
+      wishlist_Items
     };
   },
 
@@ -231,7 +240,8 @@ export default {
               </div>
             </div>
             <v-btn class="fp-vbtn" id="wl-btn" style="background-color: black" @click="addWishlistItemFunc(book._id)">
-              <v-icon>mdi-heart </v-icon>
+              <img v-if="inWishlist(book?._id)" src="/src/assets/bookstore_imgs/red-heart.svg" alt="">
+              <v-icon v-else>mdi-heart </v-icon>
               <span>wishlist</span>
             </v-btn>
           </div>
