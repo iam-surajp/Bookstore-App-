@@ -50,13 +50,12 @@ import { RouterLink } from "vue-router";
 <style scoped>
 .main {
   width: 100%;
-  height: 100vh;
+  height: fit-content;
   margin-top: 65px;
   padding: 10px;
 }
 
 .page-wrapper{
-  border:1px  solid green;
   min-height: 100vh;
 }
 
@@ -109,4 +108,20 @@ th {
   border-radius: 3px;
 
 }
+
+@media screen and (max-width:576px) {
+  .order-img img{
+    width: 50%
+  }
+
+  .order-img{
+    display: flex;
+    justify-content: center;
+  }
+
+  table{
+    font-size: 0.5rem
+  }
+}
+
 </style>

@@ -5,7 +5,6 @@ import { useCounterStore } from "@/stores/counter";
 import { ref, onMounted } from 'vue';
 import Footer from "../bookstore/footer.vue";
 
-// Define interfaces for the data structure
 interface CartItem {
   _id: string;
   product_id: {
@@ -22,10 +21,10 @@ export default {
 
   data() {
     return {
-      cart_items: [] as CartItem[],  // Explicitly type cart_items
+      cart_items: [] as CartItem[],  
       pl_ord_clkd: false,
       cntinue_btn_clkd: false,
-      itemCounts: {} as Record<string, number>  // Explicitly type itemCounts
+      itemCounts: {} as Record<string, number>  
     };
   },
 
@@ -60,17 +59,21 @@ export default {
         });
     },
 
-    incrementItem(cartItem_id: string, quantity: number) {  // Add parameter types
+    incrementItem(cartItem_id: string, quantity: number) { 
       this.counterStore.increment(cartItem_id, quantity);
       this.itemCounts[cartItem_id]++;
     },
 
-    decrementItem(cartItem_id: string, quantity: number) {  // Add parameter types
+    decrementItem(cartItem_id: string, quantity: number) {  
       if (this.itemCounts[cartItem_id] > 0) {
         this.counterStore.decrement(cartItem_id, quantity);
         this.itemCounts[cartItem_id]--;
       }
     },
+
+    gotoConfirm(){
+      this.$router.push('/ordersuccess')
+    }
   },
 
   setup() {
@@ -252,7 +255,7 @@ export default {
           </div>
         </div>
         <div class="btns-div">
-          <v-btn class="cart-btn">Checkout</v-btn>
+          <v-btn class="cart-btn" @click="gotoConfirm()">Checkout</v-btn>
         </div>
         </template>
       </div>
