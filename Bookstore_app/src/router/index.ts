@@ -6,6 +6,7 @@ import BookDetail from '../components/bookstore/book-detail.vue'
 import Cart from '../components/authUser_access/cart.vue'
 import Profile from '../components/authUser_access/profile.vue' 
 import Wishlist from '../components/authUser_access/wishlist.vue'
+import OrderSuccess from '../components/authUser_access/order_success.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,6 +47,11 @@ const router = createRouter({
       component:Wishlist
     },
 
+    {
+      path:'/ordersuccess',
+      name:'ordersuccess',
+      component:OrderSuccess
+    },
 
     {
       path: '/about',
