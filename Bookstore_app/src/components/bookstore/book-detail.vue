@@ -187,15 +187,16 @@ export default {
   },
 
   mounted() {
+
+  },
+  created() {
+    const route = useRoute();
     const homeStore = useHomeStore();
+    this.bookId = route.params.id as string;
     this.showFeedback();
     if (!this.book) {
       homeStore.fetchBooks();
     }
-  },
-  created() {
-    const route = useRoute();
-    this.bookId = route.params.id as string;
   },
 };
 </script>

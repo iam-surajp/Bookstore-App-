@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import Header from "../bookstore/header.vue";
 import Footer from "../bookstore/footer.vue";
-import { useHomeStore } from "@/stores/homeStore";
-import { onMounted, ref, computed } from "vue";
 import { RouterLink } from "vue-router";
 </script>
 

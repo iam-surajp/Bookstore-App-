@@ -81,9 +81,11 @@ export default {
   <v-layout>
     <v-app-bar color="#8b0000">
       <div class="header-div">
+        
+        <router-link to="home" style="display: flex;color: white;">
         <img class="title" src="/src/assets/bookstore_imgs/education.svg" />
-
         <h1 class="title">Bookstore</h1>
+        </router-link>
 
         <div class="search-div" width="100%">
           <v-text-field

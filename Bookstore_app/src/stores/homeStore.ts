@@ -25,7 +25,7 @@ export const useHomeStore = defineStore("homeStore", {
     books: [] as Array<{ [key: string]: any }>,
     searchQuery: "",
     selectedBook: null as { [key: string]: any } | null,
-    wishlist_items: [] as Wishlistitem[],
+    wishlist_items: [],
   }),
   actions: {
     async fetchBooks() {

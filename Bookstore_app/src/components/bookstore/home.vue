@@ -13,6 +13,8 @@ export default {
     page: 1,
     books: [],
     sortOption: 'relevance',
+    currentPage: 1,
+    perPage: 12
   }),
 
   components: {
@@ -30,6 +32,15 @@ export default {
       }
       return sortedBooks;
     },
+
+    totalPages() {
+      return Math.ceil(this.sortedBooks.length / this.perPage);
+    },
+    paginatedItems() {
+      const start = (this.currentPage - 1) * this.perPage;
+      const end = start + this.perPage;
+      return this.sortedBooks.slice(start, end);
+    }
   },
 
   methods: {
@@ -43,6 +54,10 @@ export default {
     sortBooks(event) {
       this.sortOption = event.target.value;
     },
+
+    onPageChange(page) {
+      this.currentPage = page;
+    }
   },
 
   setup() {
@@ -91,7 +106,7 @@ export default {
     <div class="books-container" v-if="books.length!=0">
       <div
         class="book-card"
-        v-for="(book, index) in sortedBooks"
+        v-for="(book, index) in paginatedItems"
         @click="runBookDetail(book)"
       >
         <div class="book-img">
@@ -130,9 +145,10 @@ export default {
     </div>
     <div class="pagination">
       <v-pagination
-        v-model="page"
-        :length="7"
+        v-model="currentPage"
+        :length="totalPages"
         :total-visible="3"
+        @input="onPageChange"
       ></v-pagination>
     </div>
     <br />
