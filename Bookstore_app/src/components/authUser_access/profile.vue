@@ -14,7 +14,11 @@ export default {
     Footer,
   },
 
-  methods: {},
+  methods: {
+    gotoHome(){
+      this.$router.push('/home')
+    }
+  },
 };
 </script>
 
@@ -23,7 +27,7 @@ export default {
     <Header />
     <div class="main">
       <div class="container">
-        <h4>Home / My cart</h4>
+        <h4><label @click="gotoHome()">Home</label> / My cart</h4>
         <div class="all-details">
           <div class="prs-det">
             <h5>Personal Details</h5>

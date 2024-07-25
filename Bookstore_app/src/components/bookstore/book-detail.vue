@@ -139,6 +139,10 @@ export default {
         console.log(error)
       })
     },
+
+    gotoHome(){
+      this.$router.push("/home")
+    }
   },
 
   setup() {
@@ -208,7 +212,7 @@ export default {
   <div class="container">
     <div class="main-content">
       <div>
-        <label>Home / <b>Book(01)</b></label>
+        <label>  <label @click="gotoHome()">Home</label> / <b>Book(01)</b></label>
       </div>
       <div id="fp-div1">
         <div class="first-partition">

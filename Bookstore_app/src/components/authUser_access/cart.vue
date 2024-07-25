@@ -73,6 +73,10 @@ export default {
 
     gotoConfirm(){
       this.$router.push('/ordersuccess')
+    },
+
+    gotoHome(){
+      this.$router.push('/home')
     }
   },
 
@@ -94,7 +98,7 @@ export default {
   <Header />
   <div class="parent">
     <div class="container">
-      <h4>Home / My cart</h4>
+      <h4><label @click="gotoHome()">Home</label> / My cart</h4>
       <div class="cart-item">
         <div class="item-info">
           <div class="h3-div"><h3>My cart ({{ cart_items.length }})</h3></div>

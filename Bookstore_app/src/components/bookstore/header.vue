@@ -41,14 +41,14 @@ export default {
 
     logout_user(){
       localStorage.removeItem('x-access-token')
-      this.$router.push('signup')
+      this.$router.push('/signup')
     },
 
     menuOption(title:string){
       if (title === "Profile"){
-        this.$router.push('profile')
+        this.$router.push('/profile')
       }else if (title === "My Wishlist"){
-        this.$router.push('wishlist')
+        this.$router.push('/wishlist')
       }
     }
   },
@@ -134,7 +134,7 @@ export default {
         </div>
 
         <div>
-          <router-link class="header-items" to="cart">
+          <router-link class="header-items" to="/cart">
             <div class="item">
               <v-badge color="white" :content="this.cartItemsCount">
                 <v-icon>mdi-cart-outline</v-icon>

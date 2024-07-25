@@ -3,12 +3,18 @@ import Header from "../bookstore/header.vue";
 import Footer from "../bookstore/footer.vue";
 import { useHomeStore } from "@/stores/homeStore";
 import { onMounted, ref,computed } from "vue";
+import { useRouter } from "vue-router";
 
 const homeStore = useHomeStore()
+const router = useRouter();
 
 onMounted(() => {
     homeStore.getWishlistItems(); 
 });
+
+const gotoHome = () =>{
+      router.push("/home")
+    }
 
 const wishlist_Items = computed(() => homeStore.wishlist_items);
 </script>
@@ -18,7 +24,7 @@ const wishlist_Items = computed(() => homeStore.wishlist_items);
     <Header />
     <div class="main">
       <div class="container">
-        <h3 style="font-size: small;">Home / <b>My Wishlist</b></h3>
+        <h3 style="font-size: small;"><label @click="gotoHome">Home</label> / <b>My Wishlist</b></h3>
         <div class="wl-box">
           <div class="wl-sub-box">
             <div class="wl-heading">
